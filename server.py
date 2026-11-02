@@ -344,11 +344,14 @@ def get_students(
     # 4. Apply Student ID Search
     if search and search.strip():
         term = search.strip()
-        if term.isdigit():
-            master = master[master["student_id"] == int(term)]
-        else:
-            # Substring search on student ID string representation
-            master = master[master["student_id"].astype(str).str.contains(term)]
+        # Clean user-typed prefixes like '#2237' or 'Student #2237'
+        clean_term = term.lstrip("#").strip()
+        if clean_term.lower().startswith("student"):
+            clean_term = clean_term[7:].strip().lstrip("#").strip()
+
+        if clean_term:
+            str_ids = master["student_id"].astype(str)
+            master = master[str_ids.str.contains(clean_term, regex=False)]
 
     # 5. Sorting
     sort_mapping = {
@@ -440,6 +443,13 @@ def get_student_detail(
         )
         for f in top_factors:
             f["specialty"] = map_feature_to_specialty(f["feature"])
+            # Convert numpy scalar types to native Python types for JSON serialization
+            raw_v = f.get("real_value")
+            if hasattr(raw_v, "item"):
+                f["real_value"] = raw_v.item()
+            elif pd.isna(raw_v):
+                f["real_value"] = "N/A"
+            f["shap_value"] = float(f["shap_value"])
             top_factors_list.append(f)
 
         briefing_text = generate_counselor_briefing(
@@ -479,24 +489,28 @@ def get_student_detail(
     for idx in sorted_indices:
         fname = feature_names[idx]
         real_val = df_raw.loc[student_id, fname]
+        if hasattr(real_val, "item"):
+            real_val = real_val.item()
+        elif pd.isna(real_val):
+            real_val = "N/A"
         shap_val = float(student_shap[idx])
         all_local_factors.append({
-            "feature": fname,
-            "real_value": real_val if pd.notnull(real_val) else "N/A",
+            "feature": str(fname),
+            "real_value": real_val,
             "shap_value": round(shap_val, 4),
-            "is_risk_driver": (shap_val > 0)
+            "is_risk_driver": bool(shap_val > 0)
         })
 
     return {
-        "student_id": student_id,
+        "student_id": int(student_id),
         "risk_score": s_risk,
         "risk_tier": tier,
         "urgency": s_urg,
         "referral_priority": s_priority,
-        "assigned_counselor": assigned_counselor,
-        "status": status,
+        "assigned_counselor": str(assigned_counselor),
+        "status": str(status),
         "true_label": s_true,
-        "has_risk_factors": has_risk_factors,
+        "has_risk_factors": bool(has_risk_factors),
         "warning": warning_message,
         "top_risk_factors": top_factors_list,
         "local_shap_factors": all_local_factors,
@@ -763,10 +777,12 @@ def export_csv(
 
     if search and search.strip():
         term = search.strip()
-        if term.isdigit():
-            master = master[master["student_id"] == int(term)]
-        else:
-            master = master[master["student_id"].astype(str).str.contains(term)]
+        clean_term = term.lstrip("#").strip()
+        if clean_term.lower().startswith("student"):
+            clean_term = clean_term[7:].strip().lstrip("#").strip()
+        if clean_term:
+            str_ids = master["student_id"].astype(str)
+            master = master[str_ids.str.contains(clean_term, regex=False)]
 
     # Sort descending by priority
     master = master.sort_values(by="referral_priority", ascending=False)

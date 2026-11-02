@@ -1,188 +1,902 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduGuard — Student Retention Portal API</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
-        body {
-            background-color: #f8fafc;
-            color: #1e293b;
-            padding: 2rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .container {
-            max-width: 760px;
-            width: 100%;
-            background: #ffffff;
-            border-radius: 14px;
-            padding: 2.5rem;
-            box-shadow: 0 10px 25px rgba(15, 43, 72, 0.08);
-            border: 1px solid #e2e8f0;
-        }
-        .header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding-bottom: 1.5rem;
-            border-bottom: 2px solid #f1f5f9;
-            margin-bottom: 1.5rem;
-        }
-        .logo {
-            font-size: 2.5rem;
-            background: #0f2b48;
-            color: #ffffff;
-            width: 55px;
-            height: 55px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 12px;
-        }
-        .title h1 {
-            font-size: 1.7rem;
-            color: #0f2b48;
-            font-weight: 700;
-        }
-        .title p {
-            color: #64748b;
-            font-size: 0.95rem;
-        }
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: #dcfce7;
-            color: #166534;
-            font-size: 0.85rem;
-            font-weight: 600;
-            padding: 6px 12px;
-            border-radius: 20px;
-            margin-bottom: 1.5rem;
-        }
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background: #16a34a;
-            border-radius: 50%;
-        }
-        .desc {
-            font-size: 1rem;
-            line-height: 1.6;
-            color: #334155;
-            margin-bottom: 1.8rem;
-        }
-        .endpoints-box {
-            background: #f8fafc;
-            border-radius: 10px;
-            padding: 1.25rem;
-            border: 1px solid #e2e8f0;
-            margin-bottom: 2rem;
-        }
-        .endpoints-box h3 {
-            font-size: 0.95rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #475569;
-            margin-bottom: 0.75rem;
-        }
-        ul.endpoint-list {
-            list-style: none;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-        ul.endpoint-list li a {
-            display: block;
-            text-decoration: none;
-            color: #0369a1;
-            background: #ffffff;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-family: monospace;
-            font-size: 0.88rem;
-            border: 1px solid #e2e8f0;
-            transition: all 0.2s ease;
-        }
-        ul.endpoint-list li a:hover {
-            background: #0f2b48;
-            color: #ffffff;
-            border-color: #0f2b48;
-        }
-        .btn-group {
-            display: flex;
-            gap: 12px;
-        }
-        .btn {
-            display: inline-block;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.95rem;
-            padding: 10px 18px;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-        }
-        .btn-primary {
-            background: #0f2b48;
-            color: #ffffff;
-        }
-        .btn-primary:hover {
-            background: #1a4269;
-        }
-        .btn-secondary {
-            background: #f1f5f9;
-            color: #334155;
-            border: 1px solid #cbd5e1;
-        }
-        .btn-secondary:hover {
-            background: #e2e8f0;
-        }
-    </style>
+    <title>EduGuard — Student Retention Portal</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="logo">🛡️</div>
-            <div class="title">
-                <h1>EduGuard API</h1>
-                <p>Student Dropout Risk Prediction & Counselor Briefing System</p>
+
+    <!-- =====================================================================
+         1. HERO LANDING SECTION
+         ===================================================================== -->
+    <section class="hero-section" id="hero-landing">
+        <div class="hero-overlay"></div>
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span>🛡️ AI Early Warning System</span>
+                    <span>•</span>
+                    <span>Higher Education Retention</span>
+                </div>
+                <h1 class="hero-title">
+                    Predict. Explain. Intervene with <span>EduGuard</span>
+                </h1>
+                <p class="hero-desc">
+                    An explainable machine learning decision-support platform designed for academic advisors. 
+                    Identify vulnerable students early, analyze individual SHAP risk drivers, and deploy targeted 
+                    counseling interventions before dropouts occur.
+                </p>
+                <div class="hero-actions">
+                    <button class="btn btn-primary" id="btn-hero-dashboard">
+                        <span>📊 Open Dashboard</span>
+                    </button>
+                    <a href="#app-root" class="btn btn-outline" id="btn-hero-learn">
+                        <span>Explore Features ↓</span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="hero-stats-panel">
+                <div class="hero-stats-title">
+                    <span>Cohort At A Glance</span>
+                    <span style="color: #5eead4;">Live Sync</span>
+                </div>
+                <div class="hero-stats-grid">
+                    <div class="hero-stat-item">
+                        <h4 id="hero-total-students">4,424</h4>
+                        <p>Total Evaluated</p>
+                    </div>
+                    <div class="hero-stat-item">
+                        <h4 id="hero-model-auc">91.98%</h4>
+                        <p>ROC-AUC Accuracy</p>
+                    </div>
+                    <div class="hero-stat-item">
+                        <h4 id="hero-high-risk">1,145</h4>
+                        <p>High Risk Students</p>
+                    </div>
+                    <div class="hero-stat-item">
+                        <h4 id="hero-advisors">6</h4>
+                        <p>Active Specialists</p>
+                    </div>
+                </div>
             </div>
         </div>
+    </section>
 
-        <div class="status-badge">
-            <div class="status-dot"></div>
-            FastAPI Backend is Online & Ready
-        </div>
+    <!-- =====================================================================
+         2. SINGLE-PAGE APP SHELL
+         ===================================================================== -->
+    <div class="app-shell" id="app-root">
+        
+        <!-- Sticky Top Navbar -->
+        <header class="navbar">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <button class="sidebar-toggle-btn" id="btn-toggle-sidebar" title="Toggle Sidebar">
+                    ☰
+                </button>
+                <div class="navbar-brand" id="nav-brand">
+                    <div class="brand-icon">🛡️</div>
+                    <div class="brand-text">
+                        <h2>EduGuard</h2>
+                        <span>Student Retention Portal</span>
+                    </div>
+                </div>
+            </div>
 
-        <p class="desc">
-            The EduGuard backend server is active. It exposes comprehensive REST API endpoints powering student retention analytics, explainable SHAP risk attributions, triage queue sorting, and automated counselor assignments.
-        </p>
+            <div class="navbar-actions">
+                <div class="system-status">
+                    <div class="status-dot"></div>
+                    <span>FastAPI Online</span>
+                </div>
+                <div class="date-pill" id="current-date-pill">
+                    📅 Nov 2, 2026
+                </div>
+                <button class="theme-toggle-btn" id="btn-theme-toggle" title="Toggle Dark/Light Mode">
+                    🌙
+                </button>
+            </div>
+        </header>
 
-        <div class="endpoints-box">
-            <h3>Key API Endpoints</h3>
-            <ul class="endpoint-list">
-                <li><a href="/api/summary">GET /api/summary</a></li>
-                <li><a href="/api/students">GET /api/students</a></li>
-                <li><a href="/api/students/2237">GET /api/students/2237</a></li>
-                <li><a href="/api/counselors">GET /api/counselors</a></li>
-                <li><a href="/api/metrics">GET /api/metrics</a></li>
-                <li><a href="/api/export.csv">GET /api/export.csv</a></li>
-            </ul>
-        </div>
+        <!-- Main Body: Sidebar + Dynamic Content -->
+        <div class="app-container">
+            
+            <!-- Collapsible Sidebar -->
+            <aside class="sidebar" id="app-sidebar">
+                <div>
+                    <div class="sidebar-section-title">Navigation</div>
+                    <ul class="nav-list">
+                        <li>
+                            <a class="nav-item active" data-page="dashboard">
+                                <span class="nav-icon">📊</span>
+                                <span class="nav-text">Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-item" data-page="students">
+                                <span class="nav-icon">👥</span>
+                                <span class="nav-text">Students</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-item" data-page="profile">
+                                <span class="nav-icon">👤</span>
+                                <span class="nav-text">Student Profile</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-item" data-page="counselors">
+                                <span class="nav-icon">🧑‍💼</span>
+                                <span class="nav-text">Counselors</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-item" data-page="assignments">
+                                <span class="nav-icon">📋</span>
+                                <span class="nav-text">Assignments</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-item" data-page="reports">
+                                <span class="nav-icon">📈</span>
+                                <span class="nav-text">Reports</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-item" data-page="about">
+                                <span class="nav-icon">ℹ️</span>
+                                <span class="nav-text">About</span>
+                            </a>
+                        </li>
+                    </ul>
 
-        <div class="btn-group">
-            <a href="/docs" class="btn btn-primary">Open Interactive Swagger Docs (OpenAPI)</a>
-            <a href="/api/summary" class="btn btn-secondary">Inspect /api/summary</a>
+                    <!-- Triage Policy Widget -->
+                    <div class="sidebar-widget">
+                        <div class="slider-header">
+                            <span class="slider-label">Urgency Weight (w)</span>
+                            <span class="slider-value" id="urgency-weight-badge">0.5</span>
+                        </div>
+                        <input type="range" class="slider-input" id="urgency-slider" min="0.0" max="2.0" step="0.1" value="0.5">
+                        <p class="slider-hint">
+                            Priority = Risk × (1 + w × Urgency). Higher weights boost students with urgent debt or late tuition fees.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="sidebar-footer">
+                    <div><b>EduGuard</b> v2.0</div>
+                    <div>University AI Project</div>
+                </div>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="main-content" id="main-content-area">
+                
+                <!-- Error State Banner (Hidden by default) -->
+                <div class="error-banner" id="api-error-banner" style="display: none;">
+                    <div style="font-size: 1.5rem;">⚠️</div>
+                    <div>
+                        <div class="error-title">Backend Connection Issue</div>
+                        <div class="error-desc" id="api-error-message">
+                            Unable to connect to the EduGuard FastAPI backend at <code>http://127.0.0.1:8000</code>. Please ensure the server is running.
+                        </div>
+                        <button class="btn btn-sm btn-primary" id="btn-retry-api" style="margin-top: 10px;">
+                            🔄 Retry Connection
+                        </button>
+                    </div>
+                </div>
+
+                <!-- =========================================================
+                     PAGE: DASHBOARD
+                     ========================================================= -->
+                <div class="page-view" id="page-dashboard">
+                    <div class="page-header">
+                        <h1 class="page-title">Retention Triage Dashboard</h1>
+                        <p class="page-subtitle">Real-time dropout risk distributions, early warnings, and prioritization triage.</p>
+                    </div>
+
+                    <!-- KPI Cards Grid -->
+                    <div class="kpi-grid">
+                        <div class="kpi-card" id="kpi-total-card">
+                            <div class="kpi-card-accent" style="background: var(--color-navy);"></div>
+                            <div class="kpi-label">Total Cohort</div>
+                            <div class="kpi-value" id="kpi-total-students">4,424</div>
+                            <div class="kpi-caption">Active Student Records</div>
+                        </div>
+                        <div class="kpi-card" id="kpi-high-card">
+                            <div class="kpi-card-accent" style="background: var(--color-high);"></div>
+                            <div class="kpi-label">High Risk</div>
+                            <div class="kpi-value" id="kpi-high-risk" style="color: var(--color-high);">1,145</div>
+                            <div class="kpi-caption">Score ≥ 0.60 (Critical)</div>
+                        </div>
+                        <div class="kpi-card" id="kpi-med-card">
+                            <div class="kpi-card-accent" style="background: var(--color-med);"></div>
+                            <div class="kpi-label">Medium Risk</div>
+                            <div class="kpi-value" id="kpi-med-risk" style="color: var(--color-med);">792</div>
+                            <div class="kpi-caption">Score 0.30 – 0.59 (Watch)</div>
+                        </div>
+                        <div class="kpi-card" id="kpi-low-card">
+                            <div class="kpi-card-accent" style="background: var(--color-low);"></div>
+                            <div class="kpi-label">Low Risk</div>
+                            <div class="kpi-value" id="kpi-low-risk" style="color: var(--color-low);">2,487</div>
+                            <div class="kpi-caption">Score &lt; 0.30 (Stable)</div>
+                        </div>
+                        <div class="kpi-card" id="kpi-avg-card">
+                            <div class="kpi-card-accent" style="background: var(--color-teal);"></div>
+                            <div class="kpi-label">Average Risk</div>
+                            <div class="kpi-value" id="kpi-avg-risk">32.1%</div>
+                            <div class="kpi-caption">Cohort-wide Baseline</div>
+                        </div>
+                        <div class="kpi-card" id="kpi-unassigned-card">
+                            <div class="kpi-card-accent" style="background: #9333ea;"></div>
+                            <div class="kpi-label">Pending Triage</div>
+                            <div class="kpi-value" id="kpi-unassigned">1,937</div>
+                            <div class="kpi-caption">Unassigned High/Med</div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Grid -->
+                    <div class="charts-grid">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <span>🎯 Risk Tier Distribution</span>
+                                </div>
+                                <span class="card-badge">Cohort Ratio</span>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="chart-risk-distribution"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <span>📚 Average Risk by Degree Program</span>
+                                </div>
+                                <span class="card-badge">Course Analysis</span>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="chart-risk-course"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Top 10 Priority Table -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span>🚨 Top 10 Urgent Triage Referrals</span>
+                            </div>
+                            <span class="card-badge">Highest Priority</span>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table" id="table-top-priority">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Student ID</th>
+                                        <th>Risk Score</th>
+                                        <th>Urgency</th>
+                                        <th>Referral Priority</th>
+                                        <th>Assigned Advisor</th>
+                                        <th>Status</th>
+                                        <th style="text-align: right;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-priority-body">
+                                    <!-- Dynamic Rows rendered via script.js -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- =========================================================
+                     PAGE: STUDENTS DIRECTORY
+                     ========================================================= -->
+                <div class="page-view" id="page-students" style="display: none;">
+                    <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h1 class="page-title">Students Directory</h1>
+                            <p class="page-subtitle">Search, filter, inspect risk attributions, and manage advisor assignments across 4,424 student records.</p>
+                        </div>
+                        <div>
+                            <button class="btn btn-outline" id="btn-export-students" style="background: var(--bg-surface); color: var(--color-teal); border: 1px solid var(--border-card);">
+                                📥 Export Filtered CSV
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filter Control Card -->
+                    <div class="card" style="margin-bottom: 1.5rem;">
+                        <div class="filter-grid">
+                            <div class="filter-item">
+                                <label class="filter-label">Search Student ID</label>
+                                <div class="search-input-wrapper">
+                                    <span class="search-icon">🔍</span>
+                                    <input type="text" id="filter-search" class="form-input" placeholder="Enter ID (e.g. 2237)...">
+                                </div>
+                            </div>
+                            <div class="filter-item">
+                                <label class="filter-label">Risk Level</label>
+                                <select id="filter-risk" class="form-select">
+                                    <option value="all">All Tiers (4,424)</option>
+                                    <option value="high">High Risk (≥ 0.60)</option>
+                                    <option value="medium">Medium Risk (0.30 - 0.59)</option>
+                                    <option value="low">Low Risk (&lt; 0.30)</option>
+                                </select>
+                            </div>
+                            <div class="filter-item">
+                                <label class="filter-label">Assigned Advisor</label>
+                                <select id="filter-counselor" class="form-select">
+                                    <option value="all">All Advisors</option>
+                                    <option value="unassigned">Unassigned Only</option>
+                                    <option value="Dr. Elena Rostova">Dr. Elena Rostova</option>
+                                    <option value="Prof. Marcus Vance">Prof. Marcus Vance</option>
+                                    <option value="Sarah Jenkins">Sarah Jenkins</option>
+                                    <option value="David Kim">David Kim</option>
+                                    <option value="Maria Santos">Maria Santos</option>
+                                    <option value="Dr. Alex Taylor">Dr. Alex Taylor</option>
+                                </select>
+                            </div>
+                            <div class="filter-item">
+                                <label class="filter-label">Case Status</label>
+                                <select id="filter-status" class="form-select">
+                                    <option value="all">All Statuses</option>
+                                    <option value="flagged">Flagged</option>
+                                    <option value="contacted">Contacted</option>
+                                    <option value="resolved">Resolved</option>
+                                </select>
+                            </div>
+                            <div class="filter-item">
+                                <label class="filter-label">Sort By</label>
+                                <div style="display: flex; gap: 6px;">
+                                    <select id="filter-sort-by" class="form-select" style="flex: 2;">
+                                        <option value="priority">Referral Priority</option>
+                                        <option value="risk">Risk Score</option>
+                                        <option value="urgency">Urgency Score</option>
+                                        <option value="id">Student ID</option>
+                                    </select>
+                                    <select id="filter-sort-order" class="form-select" style="flex: 1;">
+                                        <option value="desc">Desc</option>
+                                        <option value="asc">Asc</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Active Count & Pagination Header -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; font-size: 0.88rem; color: var(--text-secondary); flex-wrap: wrap; gap: 10px;">
+                        <span id="students-counter">Showing 0 of 0 students</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span>Rows per page:</span>
+                            <select id="students-page-size" class="form-select" style="width: auto; padding: 4px 8px; font-size: 0.85rem;">
+                                <option value="15">15</option>
+                                <option value="25" selected>25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Students Directory Table Card -->
+                    <div class="card" style="padding: 0; overflow: hidden; margin-bottom: 1.5rem;">
+                        <div class="table-container">
+                            <table class="data-table" id="table-students">
+                                <thead>
+                                    <tr>
+                                        <th>Student ID</th>
+                                        <th>Risk Score &amp; Tier</th>
+                                        <th>Urgency</th>
+                                        <th>Referral Priority</th>
+                                        <th>Assigned Advisor</th>
+                                        <th>Case Status</th>
+                                        <th>Actual Outcome</th>
+                                        <th style="text-align: right; padding-right: 1.5rem;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="students-table-body">
+                                    <!-- Dynamic Rows populated via script.js -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Pagination Bar -->
+                    <div class="pagination-bar">
+                        <button class="btn btn-sm btn-pagination" id="btn-page-prev" disabled>
+                            ← Previous
+                        </button>
+                        <span class="page-indicator" id="page-indicator">Page 1 of 1</span>
+                        <button class="btn btn-sm btn-pagination" id="btn-page-next" disabled>
+                            Next →
+                        </button>
+                    </div>
+                </div>
+
+                <!-- =========================================================
+                     PAGE: STUDENT PROFILE
+                     ========================================================= -->
+                <div class="page-view" id="page-profile" style="display: none;">
+                    <!-- Profile Header & Navigation Toolbar -->
+                    <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+                                <button class="btn btn-sm btn-outline" id="btn-profile-back" style="background: var(--bg-surface); color: var(--text-secondary); border: 1px solid var(--border-card);">
+                                    ← Back to Directory
+                                </button>
+                                <span style="font-size: 0.85rem; color: var(--text-muted);">Triage Deep-Dive</span>
+                            </div>
+                            <h1 class="page-title" id="profile-page-title">👤 Student Profile</h1>
+                            <p class="page-subtitle">Individual game-theoretic SHAP risk attribution, unscaled real factors, situational briefing, and case interventions.</p>
+                        </div>
+                        
+                        <!-- Student Quick Switcher -->
+                        <div class="profile-switcher-card">
+                            <span style="font-size: 0.82rem; font-weight: 600; color: var(--text-secondary);">Select Student:</span>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <button class="btn btn-sm btn-outline profile-nav-btn" id="btn-prev-student" title="Previous Student">‹</button>
+                                <input type="number" id="profile-student-input" class="form-input" min="0" max="4423" value="2237" style="width: 100px; text-align: center; font-weight: 700; padding: 5px 8px;" placeholder="ID">
+                                <button class="btn btn-sm btn-primary profile-nav-btn" id="btn-go-student">Go</button>
+                                <button class="btn btn-sm btn-outline profile-nav-btn" id="btn-next-student" title="Next Student">›</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Student Header KPI Summary Card -->
+                    <div class="card profile-header-card" id="profile-summary-card">
+                        <div class="profile-header-top">
+                            <div class="profile-identity">
+                                <div class="profile-avatar" id="profile-avatar">#2237</div>
+                                <div>
+                                    <h2 class="profile-name" id="profile-student-id-display">Student #2237</h2>
+                                    <div class="profile-meta-row" id="profile-meta-row">
+                                        <span class="badge badge-high" id="profile-risk-badge">98.5% High Risk</span>
+                                        <span class="badge badge-flagged" id="profile-status-badge">● Flagged</span>
+                                        <span class="profile-outcome-pill" id="profile-outcome-pill">Benchmark: Dropout</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Profile Action Toolbar -->
+                            <div class="profile-action-toolbar">
+                                <button class="btn btn-sm btn-primary" id="btn-profile-auto-assign" title="Auto-assign to specialized counselor based on top risk factor">
+                                    ⚡ Auto-Assign
+                                </button>
+                                <button class="btn btn-sm btn-outline" id="btn-profile-reassign" style="background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border-card);">
+                                    👤 Reassign Advisor
+                                </button>
+                                <button class="btn btn-sm btn-outline" id="btn-profile-mark-contacted" style="background: var(--color-contacted-bg); color: var(--color-contacted-text); border: 1px solid var(--border-subtle);">
+                                    📞 Mark Contacted
+                                </button>
+                                <button class="btn btn-sm btn-outline" id="btn-profile-mark-resolved" style="background: var(--color-resolved-bg); color: var(--color-resolved-text); border: 1px solid var(--border-subtle);">
+                                    ✅ Mark Resolved
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Header Stats Row -->
+                        <div class="profile-kpi-grid">
+                            <div class="profile-kpi-item">
+                                <span class="profile-kpi-label">Dropout Risk Probability</span>
+                                <span class="profile-kpi-value" id="profile-kpi-risk">98.5%</span>
+                                <span class="profile-kpi-sub" id="profile-kpi-tier">High Risk Tier</span>
+                            </div>
+                            <div class="profile-kpi-item">
+                                <span class="profile-kpi-label">Situational Urgency</span>
+                                <span class="profile-kpi-value" id="profile-kpi-urgency">1.00</span>
+                                <span class="profile-kpi-sub">Tuition / Debt / Zero Credits</span>
+                            </div>
+                            <div class="profile-kpi-item">
+                                <span class="profile-kpi-label">Referral Priority Score</span>
+                                <span class="profile-kpi-value" id="profile-kpi-priority" style="color: var(--color-teal);">1.4775</span>
+                                <span class="profile-kpi-sub">Priority = Risk × (1 + w × Urg)</span>
+                            </div>
+                            <div class="profile-kpi-item">
+                                <span class="profile-kpi-label">Assigned Advisor</span>
+                                <span class="profile-kpi-value" id="profile-kpi-advisor" style="font-size: 1.15rem; font-weight: 700;">Unassigned</span>
+                                <span class="profile-kpi-sub" id="profile-kpi-advisor-sub">Awaiting outreach</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Profile Two-Column Layout -->
+                    <div class="profile-body-grid">
+                        
+                        <!-- Left Column: Local SHAP Chart & Top Risk Drivers -->
+                        <div class="profile-left-col">
+                            <!-- SHAP Chart Card -->
+                            <div class="card" style="margin-bottom: 1.5rem;">
+                                <div class="card-header">
+                                    <div>
+                                        <div class="card-title">
+                                            <span>📊 Local SHAP Feature Attributions</span>
+                                        </div>
+                                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 3px;">
+                                            Red bars increase dropout probability; teal bars exert a protective retention effect.
+                                        </p>
+                                    </div>
+                                    <span class="card-badge">Top Influences</span>
+                                </div>
+                                <div class="chart-wrapper" style="height: 380px;">
+                                    <canvas id="chart-profile-shap"></canvas>
+                                </div>
+                            </div>
+
+                            <!-- Top 3 Risk Drivers Detail Card -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <span>🎯 Primary Risk Drivers (Unscaled Real Data)</span>
+                                    </div>
+                                    <span class="card-badge">Top 3 SHAP Drivers</span>
+                                </div>
+                                <div id="profile-top-factors-list" class="top-factors-container">
+                                    <!-- Dynamic Cards populated via script.js -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Counselor Briefing & Intervention Actions -->
+                        <div class="profile-right-col">
+                            <!-- Official Briefing Card -->
+                            <div class="card" style="margin-bottom: 1.5rem;">
+                                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <div class="card-title">
+                                            <span>📋 Official Counselor Briefing</span>
+                                        </div>
+                                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 3px;">
+                                            Generated from empirical SHAP values and student record.
+                                        </p>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline" id="btn-download-briefing" style="background: var(--bg-surface); color: var(--color-teal); border: 1px solid var(--border-card);">
+                                        📥 Download .txt
+                                    </button>
+                                </div>
+                                
+                                <!-- Warning banner if NoRiskFactorsError triggered -->
+                                <div id="profile-briefing-warning" class="alert-box alert-warning" style="display: none;"></div>
+                                
+                                <!-- Briefing Text Box -->
+                                <div class="briefing-terminal-box" id="profile-briefing-box">
+                                    <pre id="profile-briefing-text">Loading student briefing...</pre>
+                                </div>
+                            </div>
+
+                            <!-- Recommended Intervention Actions Card -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <div>
+                                        <div class="card-title">
+                                            <span>💡 Recommended Intervention Steps</span>
+                                        </div>
+                                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 3px;">
+                                            Actionable decision support based on primary risk domains.
+                                        </p>
+                                    </div>
+                                    <span class="card-badge">Decision Support</span>
+                                </div>
+                                <div id="profile-actions-list" class="recommended-actions-container">
+                                    <!-- Dynamic Action Items populated via script.js -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- =========================================================
+                     PAGE: COUNSELORS ROSTER
+                     ========================================================= -->
+                <div class="page-view" id="page-counselors" style="display: none;">
+                    <!-- Page Header with Simulated Badge -->
+                    <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <span class="badge badge-med">Sample roster (simulated)</span>
+                                <span style="font-size: 0.85rem; color: var(--text-muted);">Capacity-Constrained Triage</span>
+                            </div>
+                            <h1 class="page-title">🧑‍💼 Advising Team &amp; Caseloads</h1>
+                            <p class="page-subtitle">Simulated roster of 6 specialized advisors managing academic, financial, and engagement interventions across 1,700 seats.</p>
+                        </div>
+                        <div>
+                            <button class="btn btn-primary" onclick="navigateTo('assignments')">
+                                📋 Open Auto-Assignment Engine →
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Institutional Caseload Overview KPI Grid -->
+                    <div class="kpi-grid" style="margin-bottom: 2rem;">
+                        <div class="kpi-card">
+                            <div class="kpi-card-accent" style="background: var(--color-navy);"></div>
+                            <div class="kpi-label">Active Advisors</div>
+                            <div class="kpi-value" id="counselors-total-count">6</div>
+                            <div class="kpi-caption">3 Domain Specialties</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-card-accent" style="background: var(--color-teal);"></div>
+                            <div class="kpi-label">Total Capacity</div>
+                            <div class="kpi-value" id="counselors-total-capacity">1,700</div>
+                            <div class="kpi-caption">Combined Advisor Slots</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-card-accent" style="background: #9333ea;"></div>
+                            <div class="kpi-label">Assigned Students</div>
+                            <div class="kpi-value" id="counselors-total-assigned">0</div>
+                            <div class="kpi-caption">Currently in Caseloads</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-card-accent" style="background: var(--color-low);"></div>
+                            <div class="kpi-label">Available Slots</div>
+                            <div class="kpi-value" id="counselors-total-available" style="color: var(--color-low);">1,700</div>
+                            <div class="kpi-caption">Free Capacity Remaining</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-card-accent" style="background: var(--color-high);"></div>
+                            <div class="kpi-label">Caseload Utilization</div>
+                            <div class="kpi-value" id="counselors-total-utilization">0.0%</div>
+                            <div class="kpi-caption">Cohort-wide Load</div>
+                        </div>
+                    </div>
+
+                    <!-- Specialty Filter Tabs -->
+                    <div class="counselor-filter-bar">
+                        <div class="counselor-tabs" id="counselor-tabs">
+                            <button class="counselor-tab-btn active" data-specialty="all">
+                                All Specialties (6)
+                            </button>
+                            <button class="counselor-tab-btn" data-specialty="academic">
+                                📚 Academic (2)
+                            </button>
+                            <button class="counselor-tab-btn" data-specialty="financial">
+                                💳 Financial (2)
+                            </button>
+                            <button class="counselor-tab-btn" data-specialty="engagement">
+                                🤝 Engagement (2)
+                            </button>
+                        </div>
+                        <span id="counselors-view-count" style="font-size: 0.88rem; color: var(--text-muted);">
+                            Showing 6 advisors
+                        </span>
+                    </div>
+
+                    <!-- 3x2 Counselors Cards Grid -->
+                    <div class="counselor-grid" id="counselors-cards-container">
+                        <!-- Populated dynamically via script.js -->
+                    </div>
+                </div>
+                <!-- =========================================================
+                     PAGE: ASSIGNMENTS ENGINE
+                     ========================================================= -->
+                <div class="page-view" id="page-assignments" style="display: none;">
+                    <!-- Page Header & Action Buttons -->
+                    <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <span class="badge badge-med">Algorithm Engine</span>
+                                <span style="font-size: 0.85rem; color: var(--text-muted);">Explainable XAI Triage</span>
+                            </div>
+                            <h1 class="page-title">📋 Capacity-Constrained Auto-Assignment</h1>
+                            <p class="page-subtitle">Priority-ordered triage matching student SHAP risk factors to specialized advisor caseloads with a 1,700 seat cap.</p>
+                        </div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button class="btn btn-primary" id="btn-run-auto-assign" style="background: var(--color-teal); box-shadow: 0 4px 14px var(--color-teal-glow);">
+                                ⚡ Run Auto-Assignment (High &amp; Med)
+                            </button>
+                            <button class="btn btn-outline" id="btn-reset-assignments" style="background: var(--bg-surface); color: var(--color-high); border: 1px solid var(--border-card);">
+                                ↺ Reset All Assignments
+                            </button>
+                            <button class="btn btn-outline" id="btn-export-assignments" style="background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border-card);">
+                                📥 Export CSV
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Triage Summary KPI Grid -->
+                    <div class="kpi-grid" style="margin-bottom: 2rem;">
+                        <div class="kpi-card">
+                            <div class="kpi-card-accent" style="background: var(--color-navy);"></div>
+                            <div class="kpi-label">Eligible Students</div>
+                            <div class="kpi-value" id="kpi-assign-eligible">1,937</div>
+                            <div class="kpi-caption">High (1,145) + Medium (792)</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-card-accent" style="background: var(--color-teal);"></div>
+                            <div class="kpi-label">Specialist Capacity</div>
+                            <div class="kpi-value" id="kpi-assign-capacity">1,700</div>
+                            <div class="kpi-caption">6 Advisors Maximum Load</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-card-accent" style="background: var(--color-low);"></div>
+                            <div class="kpi-label">Successfully Assigned</div>
+                            <div class="kpi-value" id="kpi-assign-assigned" style="color: var(--color-low);">0</div>
+                            <div class="kpi-caption" id="kpi-assign-assigned-sub">Awaiting run</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-card-accent" style="background: var(--color-high);"></div>
+                            <div class="kpi-label">Capacity Overflow</div>
+                            <div class="kpi-value" id="kpi-assign-overflow" style="color: var(--color-high);">0</div>
+                            <div class="kpi-caption">Unassigned (Capacity Full)</div>
+                        </div>
+                    </div>
+
+                    <!-- Viva Explanation Box: Matching Logic & Constraints -->
+                    <div class="card" style="margin-bottom: 2rem; border-left: 4px solid var(--color-teal);">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span>🧠 Algorithmic Triage &amp; Assignment Rules (Viva Defense Ready)</span>
+                            </div>
+                            <span class="card-badge">Greedy Constraint Logic</span>
+                        </div>
+                        <div style="font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary);">
+                            <div class="algorithm-steps-grid">
+                                <div class="algo-step-item">
+                                    <div class="algo-step-number">1</div>
+                                    <div>
+                                        <b style="color: var(--text-primary);">Priority Ordering</b>
+                                        <p style="margin-top: 3px; font-size: 0.83rem;">
+                                            Filter students with Risk Score &ge; 0.30 (High and Medium tiers). Sort in descending order of Referral Priority:
+                                            <code style="display: block; margin-top: 4px; padding: 2px 6px; background: var(--bg-page); border-radius: 4px;">Priority = Risk × (1 + w × Urgency)</code>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="algo-step-item">
+                                    <div class="algo-step-number">2</div>
+                                    <div>
+                                        <b style="color: var(--text-primary);">SHAP Factor Mapping</b>
+                                        <p style="margin-top: 3px; font-size: 0.83rem;">
+                                            Identify each student's top positive SHAP risk driver. Map the feature name to a domain specialty:
+                                            <span style="display: block; margin-top: 4px; font-size: 0.8rem;">
+                                                • <b>Academic:</b> Approved units, grades, evaluations<br>
+                                                • <b>Financial:</b> Tuition fees, debtor status, scholarship<br>
+                                                • <b>Engagement:</b> Age, attendance, marital status
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="algo-step-item">
+                                    <div class="algo-step-number">3</div>
+                                    <div>
+                                        <b style="color: var(--text-primary);">Specialist Load Balancing</b>
+                                        <p style="margin-top: 3px; font-size: 0.83rem;">
+                                            Assign the student to the counselor with the matching specialty who has free capacity (&lt; capacity) and the lowest current load.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="algo-step-item">
+                                    <div class="algo-step-number">4</div>
+                                    <div>
+                                        <b style="color: var(--text-primary);">Fallback &amp; Overflow Guardrail</b>
+                                        <p style="margin-top: 3px; font-size: 0.83rem;">
+                                            If matching specialists are full, assign any counselor with free capacity. Once all 1,700 seats are exhausted, designate as:
+                                            <span class="badge badge-high" style="margin-top: 4px; display: inline-block;">Unassigned - capacity full</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Caseload Distribution Table Card -->
+                    <div class="card" style="margin-bottom: 2rem;">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span>📊 Advisor Utilization &amp; Load Summary</span>
+                            </div>
+                            <span class="card-badge">Live Caseloads</span>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table" id="table-assignments-summary">
+                                <thead>
+                                    <tr>
+                                        <th>Advisor Name</th>
+                                        <th>Domain Specialty</th>
+                                        <th>Assigned / Capacity</th>
+                                        <th style="min-width: 140px;">Caseload Bar</th>
+                                        <th>Remaining Slots</th>
+                                        <th>Utilization</th>
+                                        <th style="text-align: right;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-assignments-summary-body">
+                                    <!-- Populated dynamically via script.js -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Active Assignment Queue Preview Card -->
+                    <div class="card">
+                        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                            <div class="card-title">
+                                <span>🚨 High-Priority Triage Queue Preview (Top 10 Referrals)</span>
+                            </div>
+                            <button class="btn btn-sm btn-outline" onclick="navigateTo('students')" style="background: var(--bg-surface); color: var(--color-teal); border: 1px solid var(--border-card);">
+                                View All Students in Directory →
+                            </button>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table" id="table-assignments-queue">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Student ID</th>
+                                        <th>Risk Score</th>
+                                        <th>Referral Priority</th>
+                                        <th>Assigned Advisor</th>
+                                        <th>Status</th>
+                                        <th style="text-align: right;">Profile Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-assignments-queue-body">
+                                    <!-- Populated dynamically via script.js -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="page-view" id="page-reports" style="display: none;"></div>
+                <div class="page-view" id="page-about" style="display: none;"></div>
+
+            </main>
         </div>
     </div>
+
+    <!-- Quick Assign Counselor Modal Popup -->
+    <div class="modal-backdrop" id="assign-modal" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 class="modal-title">Advisor Assignment</h3>
+                <button class="modal-close-btn" id="btn-close-assign-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                    Assign or change the advisor for <b id="modal-student-name">Student #0</b>:
+                </p>
+                <div style="margin-bottom: 1rem;">
+                    <label class="filter-label" style="margin-bottom: 6px;">Select Advisor</label>
+                    <select id="modal-counselor-select" class="form-select">
+                        <option value="Unassigned">Unassigned</option>
+                        <option value="Dr. Elena Rostova">Dr. Elena Rostova (Academic)</option>
+                        <option value="Prof. Marcus Vance">Prof. Marcus Vance (Academic)</option>
+                        <option value="Sarah Jenkins">Sarah Jenkins (Financial)</option>
+                        <option value="David Kim">David Kim (Financial)</option>
+                        <option value="Maria Santos">Maria Santos (Engagement)</option>
+                        <option value="Dr. Alex Taylor">Dr. Alex Taylor (Engagement)</option>
+                    </select>
+                </div>
+                <div id="modal-counselor-preview" style="font-size: 0.8rem; color: var(--text-muted); background: var(--bg-page); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-subtle);">
+                    ℹ️ Assignments are persisted to server memory and <code>state.json</code>.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-sm btn-outline" id="btn-cancel-assign" style="background: var(--bg-surface); color: var(--text-secondary); border: 1px solid var(--border-card);">
+                    Cancel
+                </button>
+                <button class="btn btn-sm btn-primary" id="btn-confirm-assign">
+                    Confirm Assignment
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Main JavaScript Logic -->
+    <script src="script.js"></script>
 </body>
 </html>

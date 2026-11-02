@@ -1,151 +1,115 @@
 # Project Progress & Handoff Report
 **Project Name:** EduGuard — Student Dropout Risk Prediction & Counselor Briefing System  
-**Last Updated:** November 1, 2026  
+**Branch:** `website` (Full-Stack FastAPI + Vanilla JS/CSS/HTML Web Application)  
+**Last Updated:** November 2, 2026  
 **Target Submission Deadline:** November 15, 2026 (UMS Submission)  
 
 ---
 
 ## 1. What Has Been Completed So Far
 
-### Step 1: Data Integrity, Preprocessing & 5-Fold Cross-Validation
-- **`data/data.csv`**: Loaded the official UCI "Predict Students' Dropout and Academic Success" dataset containing 4,424 student records and 36 predictive features (semicolon-delimited).
-- **`ACCEPTANCE.md`**: Defined explicit, measurable acceptance criteria:
-  - Recall (Dropout Class) $\ge 0.75$
-  - ROC-AUC Score $\ge 0.85$
-  - F1-Score $\ge 0.70$
-  - Precision $\ge 0.65$
-  - Data Quality Gate: Zero missing cells, zero duplicates.
-- **`requirements.txt`**: Pinned core dependencies (`pandas`, `numpy`, `scikit-learn`, `joblib`, `matplotlib`, `shap`, `streamlit`).
-- **`train.py`**:
-  - Validated data quality (shape, zero missing values, zero duplicates, target distribution).
-  - Formulated binary target: `Dropout = 1` (1,421 students, 32.12%), `Enrolled / Graduate = 0` (3,003 students, 67.88%).
-  - Evaluated Baseline Logistic Regression (using `Pipeline` with `StandardScaler` to prevent data leakage) against Random Forest Classifier across Stratified 5-Fold Cross-Validation.
-- **`results.csv`**: Saved empirical cross-validation metrics (mean ± std):
-  - *Random Forest:* Precision: **87.50% ± 2.67%**, Recall: **71.36% ± 0.49%**, F1: **78.59% ± 1.08%**, ROC-AUC: **0.9198 ± 0.0100**
-  - *Logistic Regression:* Precision: **87.10% ± 2.08%**, Recall: **72.27% ± 1.46%**, F1: **78.97% ± 0.97%**, ROC-AUC: **0.9182 ± 0.0060**
-
-### Step 2: Out-of-Fold Risk Scoring & SHAP Explainability
-- **`explain.py`**:
-  - Computed honest, unbiased Out-of-Fold (OOF) predicted probabilities using `cross_val_predict` with `StratifiedKFold(n_splits=5)`.
-  - Trained the final production Random Forest model on the complete dataset (`class_weight="balanced"`).
-  - Applied SHAP `TreeExplainer` across all 4,424 students, with backward/forward compatibility handling for 2D, 3D, and Explanation output formats for Class 1 (Dropout).
-  - Generated and saved the global feature importance bar chart (`shap_summary.png`).
-- **`risk_scores.csv`**: Out-of-fold predicted dropout risk scores (`student_id`, `risk_score`, `true_label`).
-- **`model.pkl`**: Serialized production Random Forest model.
-- **`features.pkl`**: Serialized list of the 36 feature column names.
-- **`shap_values.npy`**: Precomputed Class 1 SHAP matrix (4,424 rows $\times$ 36 features).
-- **`shap_summary.png`**: Top 15 global predictors plot (Top 3: `Curricular units 2nd sem (approved)`, `grade`, and `1st sem (approved)`).
-
-### Step 3: Triage Priority Ranking & Counselor Briefings
-- **`briefing.py`**:
-  - Implemented situational urgency score ($0.0 \text{ to } 1.0$) based on imminent administrative and academic dismissal factors (unpaid tuition fees, debtor status, and zero approved units in 2nd semester).
-  - Implemented Referral Priority formula:
-    $$\text{Referral Priority} = \text{Risk Score} \times (1 + \text{urgency\_weight} \times \text{urgency})$$
-  - Extracted student-specific top 3 positive SHAP risk drivers paired with actual unscaled values from `data.csv`.
-  - Implemented `NoRiskFactorsError` safety guardrail to halt generic or hallucinated briefings if no positive risk factors exist.
-- **`ranked_students.csv`**: Exported prioritized triage queue of 1,353 flagged students ($\text{Risk} \ge 0.50$).
-
-### Step 4: Web Application Architecture
-- **`styles.py`**: Injected custom CSS for Navy/Slate SaaS theme, white cards, soft shadows, colored risk badges (High, Medium, Low), status badges (Flagged, Contacted, Resolved), and top brand header.
-- **`assigner.py`**: Defined simulated 6-advisor roster (Academic, Financial, Engagement specialties with 1,700 total student capacity), feature-to-specialty mapping, and capacity-constrained auto-assignment algorithm.
-- **`app.py`**: Multi-page Streamlit portal ("EduGuard - Student Retention Portal") with zero deprecation warnings (`width='stretch'`, no `inplace=True`).
-- **`README.md`**: Complete project documentation, architecture diagram, formulas, and execution steps.
-- **`VIVA_PREP.md`**: Oral examination defense guide covering 13 common questions with real empirical numbers.
+### Core Machine Learning Pipeline (Main Branch / Fallback)
+- **`data/data.csv`**: Loaded official UCI "Predict Students' Dropout and Academic Success" dataset (4,424 students, 36 features).
+- **`train.py`**: Binary classification formulation (Dropout=1, Enrolled/Graduate=0) with Stratified 5-Fold Cross-Validation.
+- **`results.csv`**: Empirical cross-validation metrics comparing Random Forest (ROC-AUC: 0.9198, Recall: 71.36%, Precision: 87.50%, F1: 78.59%) vs Logistic Regression.
+- **`explain.py`**: Honest Out-of-Fold predicted probabilities (`risk_scores.csv`), production Random Forest (`model.pkl`), feature names (`features.pkl`), Class 1 SHAP matrix (`shap_values.npy`), and global plot (`shap_summary.png`).
+- **`briefing.py`**: Situational urgency scoring, referral priority formula: $\text{Priority} = \text{Risk} \times (1 + \text{weight} \times \text{urgency})$, unscaled SHAP risk drivers extraction, and `NoRiskFactorsError` guardrail.
+- **`assigner.py`**: 6 simulated advisors across Academic, Financial, and Engagement specialties (1,700 total capacity), feature-to-specialty mapper, and capacity-constrained auto-assignment algorithm.
+- **`app.py`**: 7-page Streamlit portal preserved completely intact as a working fallback.
 
 ---
 
-## 2. Current State of `app.py`
+### Full-Stack Web Portal (Website Branch)
 
-### Implemented Pages & Features:
-1. **Top Brand Banner**: EduGuard logo, subtitle, and dynamic date.
-2. **Sidebar Navigation**:
-   - Radio buttons with icons for all 7 pages.
-   - Urgency weight slider ($0.0 \text{ to } 2.0$, default $0.5$).
-   - Risk tier reference guide (High $\ge 0.60$, Medium $0.30 - 0.59$, Low $< 0.30$).
-3. **Dashboard Page**:
-   - 6 KPI cards (Total Cohort, High Risk, Medium Risk, Low Risk, Average Risk, Unassigned).
-   - Risk Level Distribution bar chart (High, Medium, Low counts).
-   - Average Dropout Risk by Degree Course horizontal bar chart.
-   - Top 10 Priority Triage Queue with individual "View" buttons navigating to Student Profile.
-4. **Students Directory Page**:
-   - Search by numeric Student ID.
-   - Filter by Risk Level (All, High, Medium, Low), Counselor (All, Unassigned, specific), and Status.
-   - Pagination controls (15, 30, 50, 100 rows per page; Previous / Next buttons).
-   - "View" and "Assign" buttons per row.
-   - CSV export of filtered students.
-5. **Student Profile Page**:
-   - Header summary card with Risk Badge, Status Badge, Risk %, Urgency, and Priority.
-   - Horizontal SHAP local feature attribution chart (Red for risk drivers, Blue for protective factors) with real values.
-   - Official Advising Briefing text area and `.txt` file download.
-   - Action buttons:
-     - "🤖 Auto-Assign by Specialty"
-     - "🔄 Reassign Counselor" (opens `@st.dialog` pop-up)
-     - "📞 Mark as Contacted" (updates state with `st.toast`)
-     - "✅ Mark as Resolved" (updates state with `st.toast`)
-6. **Counselors Page**:
-   - 3x2 grid of simulated counselor cards with specialty badges, live caseload progress bars, capacity, and utilization percentage.
-   - "View Caseload" button filtering the directory to that advisor.
-7. **Assignments Page**:
-   - "⚡ Run Auto-Assignment for High & Medium Students" button executing the prioritized specialty-matching rule.
-   - "🔄 Reset All Assignments" button.
-   - Real-time advisor utilization summary table.
-   - Current assignment records table and CSV download.
-8. **Reports Page**:
-   - Acceptance Criteria scorecard matrix comparing target thresholds against achieved metrics.
-   - 5-Fold cross-validation results table (`results.csv`).
-   - Global SHAP feature importance plot (`shap_summary.png`).
-   - Methodological & Practical Limitations callout box.
-9. **About Page**:
-   - Problem statement, 7-step technical pipeline, and technology stack.
+#### Step 1: FastAPI REST Backend (`server.py`)
+- Created FastAPI backend instance `app` serving REST API endpoints and mounting `web/` static files:
+  - `GET /api/summary`: High-level cohort KPIs, risk distribution, degree program risks, top 10 referrals.
+  - `GET /api/students`: Filterable, searchable, sorted, paginated student directory with CSV export (`GET /api/export.csv`).
+  - `GET /api/students/{id}`: Single student deep-dive, local SHAP feature attributions, unscaled real values, briefing text, and suggested actions.
+  - `GET /api/counselors`: Roster of 6 simulated advisors with live caseloads, capacities, and utilization rates.
+  - `POST /api/assign/auto`: Capacity-constrained greedy auto-assignment matching student SHAP drivers to specialist loads.
+  - `POST /api/assign/{id}`: Manual advisor assignment/reassignment.
+  - `POST /api/status/{id}`: Student outreach status updates (`Flagged`, `Contacted`, `Resolved`).
+  - `POST /api/reset`: Reset all assignments to "Unassigned" and statuses to "Flagged".
+  - `GET /api/metrics`: Cross-validation metrics, acceptance criteria verification matrix, and global feature importances.
+- **Persistence (`state.json`)**: Persistent storage ensures that advisor assignments and student case statuses survive server reloads.
 
-### Known Limitations / Current State Notes:
-- **No broken syntax or runtime errors**: All scripts compile cleanly.
-- **In-Memory State**: Counselor assignments and student contact statuses live in Streamlit's `st.session_state`. Refreshing the browser resets dynamic assignments back to default ("Unassigned"), which is expected for this prototype (no database).
+#### Step 2: Foundation, Hero Section & Dashboard (`web/`)
+- Single-page application shell with Inter typography, navy/teal palette, collapsible sidebar, live urgency slider ($0.0 - 2.0$), and light/dark mode with `localStorage` persistence.
+- Animated Landing Hero with gradient mesh, cohort overview stats, and "Open Dashboard" button.
+- Dashboard Page (`📊 Dashboard`): 6 count-up KPI cards, Chart.js Risk Tier Doughnut, Average Risk by Course Bar Chart, and Top 10 Urgent Triage Referrals table.
+
+#### Step 3: Students Directory (`👥 Students`)
+- Multi-criteria filter toolbar: search by Student ID (debounced 300ms), filter by risk tier (`High`, `Med`, `Low`), assigned advisor, case status, sort field, and sort direction.
+- Dynamic pagination with rows-per-page selector (15, 25, 50, 100) and boundary disabling.
+- Quick advisor assignment modal dialog (`#assign-modal`) with dark-backdrop blur.
+- Live filtered CSV export via `/api/export.csv`.
+
+#### Step 4: Student Profile Deep-Dive (`👤 Student Profile`)
+- Student Quick Switcher bar (`‹`, ID input, `Go`, `›`) to jump to any of the 4,424 students.
+- Header KPI Card showing Student ID, Risk badge, Status pill, Historical outcome (`Dropout` vs `Retained`), Urgency score, Priority score, and Advisor.
+- Interactive Local SHAP Horizontal Bar Chart (Chart.js) with red risk drivers, teal protective factors, and tooltips showing unscaled dataset values.
+- Primary Risk Drivers cards with unscaled real values and domain badges (`Academic`, `Financial`, `Engagement`).
+- Counselor Briefing box with `.txt` download button and `NoRiskFactorsError` guardrail warning alert.
+- Case management actions: "⚡ Auto-Assign", "👤 Reassign Advisor", "📞 Mark Contacted", "✅ Mark Resolved".
+
+#### Step 5: Counselors Roster (`🧑‍💼 Counselors`)
+- Prominently displays the mandatory `Sample roster (simulated)` badge.
+- Institutional overview cards: 6 active advisors, 1,700 seats, active assigned, available slots, and utilization percentage.
+- Domain specialty filter tabs (`All`, `Academic`, `Financial`, `Engagement`).
+- 3×2 counselor card grid with animated progress bars color-coded by load threshold (emerald $<75\%$, amber $75-90\%$, crimson $>90\%$).
+- "👥 View Caseload →" deep-links directly into the Students Directory filtered to that advisor.
+
+#### Step 6: Assignments Engine (`📋 Assignments`)
+- "⚡ Run Auto-Assignment (High & Med)": processes 1,937 students, fills all 1,700 specialist slots, and designates 237 overflow students as `"Unassigned - capacity full"`.
+- "↺ Reset All Assignments": cleans assignments and statuses back to defaults.
+- Algorithmic triage card detailing the 4-step greedy constraint matching logic for viva defense.
+- Live advisor caseload utilization table and top 10 priority triage queue preview table.
+
+---
+
+## 2. Bug Fixes & Refinements Applied
+
+1. **NumPy Scalar Serialization (HTTP 500 Fix)**:
+   - *Problem*: In `GET /api/students/{id}`, extracting unscaled feature values from `df_raw` returned `numpy.int64` and `numpy.float64` objects. FastAPI's `jsonable_encoder` failed to iterate over them and raised `TypeError: 'numpy.int64' object is not iterable`, resulting in HTTP 500.
+   - *Fix*: Applied `.item()` in `server.py` to sanitize all numpy scalars into native Python `int` and `float` types. Tested across all 4,424 records with 100% success.
+2. **Search Matching & Regex Error Handling**:
+   - *Problem*: Searching with `#` or `Student #` prefixes failed exact digit matching, and `Series.str.contains()` defaulted to `regex=True`, throwing errors on regex characters.
+   - *Fix*: Cleaned leading `#` and `Student` prefixes in `server.py` and `script.js`, and configured `str.contains(clean_term, regex=False)` so partial numbers and special characters are handled smoothly.
 
 ---
 
 ## 3. What Needs to Be Done Next
 
-1. **Manual User-Testing**:
-   - Launch the portal and click through every page in the browser to verify visual presentation and interactions.
-2. **Prepare Final Academic Deliverables (Before Nov 15, 2026)**:
-   - **Written Project Report**: Document problem definition, dataset statistics, methodology, cross-validation comparison, SHAP analysis, and ethical implications.
-   - **Presentation Slide Deck (PPT)**: Structure 8–10 slides for the oral defense (Problem $\rightarrow$ Data Checks $\rightarrow$ Model Results $\rightarrow$ SHAP Insights $\rightarrow$ EduGuard System $\rightarrow$ Live Demo).
-   - **Project Archive (ZIP)**: Prepare clean ZIP containing source code and documentation for UMS submission.
-3. **Optional Cloud Deployment**:
-   - Push repository to GitHub and connect to [Streamlit Community Cloud](https://share.streamlit.io) to generate a public live demo URL.
+Only **2 steps remain** to complete the entire web application:
+
+1. **Step 7: Reports Page (`📈 Reports`)**:
+   - Stratified 5-Fold Cross-Validation metrics table from `results.csv`.
+   - `ACCEPTANCE.md` Verification Matrix with live computed **PASS** badges for all 5 criteria.
+   - Embed global SHAP feature importance plot (`shap_summary.png`).
+   - Methodological Limitations callout box (Portuguese context, simulated roster, out-of-fold probabilities).
+2. **Step 8: About Page (`ℹ️ About`) & Final Push**:
+   - Project mission, 7-stage ML pipeline breakdown, and technology stack badges.
+   - Final review and commit to GitHub branch `website`.
 
 ---
 
-## 4. Exact Commands to Restart Tomorrow
+## 4. Exact Commands to Restart
 
-Run these commands in your PowerShell terminal from the project root:
+From PowerShell in the project directory:
 
-### Step A: Activate Virtual Environment (if using one)
-```powershell
-# If using a virtual environment in .venv or venv:
-.\venv\Scripts\Activate.ps1
-```
-
-### Step B: Install / Verify Dependencies
+### Step A: Verify Dependencies
 ```powershell
 pip install -r requirements.txt
 ```
 
-### Step C: Run Pipeline Scripts (Only if artifacts are missing)
-*Note: All artifacts already exist in the folder. You only need to run these if files were deleted:*
+### Step B: Launch the FastAPI Web Application
 ```powershell
-# 1. Model cross-validation comparison (generates results.csv):
-python train.py
-
-# 2. Risk scoring, SHAP tree explanations, and artifacts (generates model.pkl, shap_values.npy, shap_summary.png):
-python explain.py
-
-# 3. Triage ranking verification (generates ranked_students.csv):
-python briefing.py
+uvicorn server:app --reload --port 8000
 ```
+Open **`http://localhost:8000`** in your browser.
 
-### Step D: Launch the Web Application
+### (Fallback) Launch the Streamlit Prototype
 ```powershell
 streamlit run app.py
 ```
