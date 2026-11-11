@@ -30,6 +30,7 @@ import io
 import csv
 
 from fastapi import FastAPI, HTTPException, Query, Response
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -73,6 +74,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"]
 )
+
+# Prevent browser from caching static assets (js, css, html) during development
+@app.middleware("http")
+async def add_no_cache_headers(request, call_next):
+    response = await call_next(request)
+    if any(request.url.path.endswith(ext) for ext in [".js", ".css", ".html", "/"]):
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+    return response
 
 
 # -----------------------------------------------------------------------------
@@ -745,6 +756,17 @@ def get_metrics():
         "global_feature_importance": global_features,
         "limitations": limitations
     }
+
+
+@app.get("/api/shap_summary.png", summary="Global SHAP Summary Plot Image")
+def get_shap_image():
+    """
+    Returns the global SHAP feature importance plot image (shap_summary.png).
+    """
+    img_path = Path("shap_summary.png")
+    if not img_path.is_file():
+        raise HTTPException(status_code=404, detail="shap_summary.png not found.")
+    return FileResponse(img_path, media_type="image/png")
 
 
 @app.get("/api/export.csv", summary="Export Filtered Student Triage Queue to CSV")

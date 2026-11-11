@@ -66,6 +66,20 @@
 - Algorithmic triage card detailing the 4-step greedy constraint matching logic for viva defense.
 - Live advisor caseload utilization table and top 10 priority triage queue preview table.
 
+#### Step 7: Reports Page (`📈 Reports`)
+- **`ACCEPTANCE.md` Automated Verification Scorecard**: Computes live verification matrix against all 5 formal benchmark criteria with status badges (100% Passed).
+- **Stratified 5-Fold Cross-Validation Matrix**: Direct rendering of `results.csv` comparing Random Forest (91.98% ROC-AUC, 87.50% Precision, 71.36% Recall, 78.59% F1) vs Logistic Regression baseline, complete with a direct CSV download button.
+- **Explainability & Global Drivers (`shap_summary.png`)**: Embedded high-resolution SHAP summary plot alongside an interactive Top 10 Global Features table with domain category badges.
+- **Methodological Limitations Dossier**: Academic discussion of Portuguese polytechnic cohort constraints, simulated counselor capacities, and out-of-fold probabilistic inference.
+- **Asset Integration & Cache-Busting**: Added FileResponse endpoint `/api/shap_summary.png` and no-cache headers.
+
+#### Step 8: About Page (`ℹ️ About & Viva Voce Dossier`)
+- **Mission & Ethical Non-Punitive Mandate**: Comprehensive articulation of non-punitive, supportive early warning design, local game-theoretic transparency, human-in-the-loop counselor sovereignty, and student privacy standards.
+- **7-Stage Machine Learning Pipeline Breakdown**: Complete architectural breakdown spanning (1) Ingestion & Binarization, (2) Leakage-Free 5-Fold CV, (3) TreeSHAP Game-Theoretic Explainability, (4) Situational Urgency Scoring, (5) Priority Triage Queue, (6) Capacity-Constrained Greedy Matching, and (7) Dual-Interface SaaS Architecture.
+- **Technology Stack Badges**: Interactive cards covering FastAPI, Scikit-Learn, SHAP, Chart.js, Pandas/NumPy, Vanilla Web, and Streamlit fallback.
+- **Viva Voce Oral Defense Interactive Guide**: 10 interactive examination questions with technical justifications covering algorithm selection, class binarization, leakage prevention, SHAP axioms, capacity limits, ethical guardrails, and architectural decoupling, complete with "Expand/Collapse All" controls.
+- **Project Metadata & Citations**: Academic credits for Umair Khan, UCI dataset #697 citation, GitHub repository link, and viva defense target date (Nov 15, 2026).
+
 ---
 
 ## 2. Bug Fixes & Refinements Applied
@@ -76,21 +90,26 @@
 2. **Search Matching & Regex Error Handling**:
    - *Problem*: Searching with `#` or `Student #` prefixes failed exact digit matching, and `Series.str.contains()` defaulted to `regex=True`, throwing errors on regex characters.
    - *Fix*: Cleaned leading `#` and `Student` prefixes in `server.py` and `script.js`, and configured `str.contains(clean_term, regex=False)` so partial numbers and special characters are handled smoothly.
+3. **Browser Asset Caching & Route Handling**:
+   - *Problem*: Browser cached older `script.js` from previous steps.
+   - *Fix*: Applied cache-busting version strings (`?v=8.0`) to CSS and JS imports in `index.html`, implemented HTTP `no-cache` middleware in `server.py`, and removed all placeholder interceptors.
 
 ---
 
-## 3. What Needs to Be Done Next
+## 3. Project Status & Viva Readiness
 
-Only **2 steps remain** to complete the entire web application:
+**Status: 100% COMPLETE — All 8 Milestones Implemented, Tested, and Verified.**
 
-1. **Step 7: Reports Page (`📈 Reports`)**:
-   - Stratified 5-Fold Cross-Validation metrics table from `results.csv`.
-   - `ACCEPTANCE.md` Verification Matrix with live computed **PASS** badges for all 5 criteria.
-   - Embed global SHAP feature importance plot (`shap_summary.png`).
-   - Methodological Limitations callout box (Portuguese context, simulated roster, out-of-fold probabilities).
-2. **Step 8: About Page (`ℹ️ About`) & Final Push**:
-   - Project mission, 7-stage ML pipeline breakdown, and technology stack badges.
-   - Final review and commit to GitHub branch `website`.
+All 7 web views are fully operational:
+1. `📊 Executive Dashboard`: KPIs, Risk Distribution, Program Attrition, Top 10 Referrals.
+2. `👥 Student Directory`: Real-time debounced search, multi-field filters, pagination, quick advisor assignment, CSV export.
+3. `👤 Student Profile Deep-Dive`: Real-time quick switcher, interactive local SHAP horizontal chart, personalized counselor briefing, guardrails, case actions.
+4. `🧑‍💼 Counselors Roster`: Roster cards, live caseload gauges, simulated notice, caseload deep-linking.
+5. `📋 Assignments Engine`: Greedy capacity-constrained auto-assignment (1,937 processed, 1,700 filled, 237 overflow), reset action.
+6. `📈 Reports & Audit Scorecard`: Live 5-point acceptance criteria pass badges, 5-fold CV table, global SHAP plot, limitations box.
+7. `ℹ️ About & Viva Defense Dossier`: Mission, 7-stage ML pipeline, technology stack badges, 10-point viva defense accordion.
+
+The fallback Streamlit application (`app.py`) remains 100% intact and runnable on port 8501.
 
 ---
 

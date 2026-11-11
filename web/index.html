@@ -14,7 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <!-- Custom Stylesheet -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=8.0">
 </head>
 <body>
 
@@ -848,8 +848,731 @@
                         </div>
                     </div>
                 </div>
-                <div class="page-view" id="page-reports" style="display: none;"></div>
-                <div class="page-view" id="page-about" style="display: none;"></div>
+                <!-- =========================================================
+                     PAGE: REPORTS & ACCEPTANCE SCORECARD
+                     ========================================================= -->
+                <div class="page-view" id="page-reports" style="display: none;">
+                    <!-- Page Header & Download Actions -->
+                    <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <span class="badge badge-low">Verified Performance</span>
+                                <span style="font-size: 0.85rem; color: var(--text-muted);">Stratified 5-Fold Cross-Validation</span>
+                            </div>
+                            <h1 class="page-title">📈 Model Reports &amp; Acceptance Scorecard</h1>
+                            <p class="page-subtitle">Rigorous empirical cross-validation metrics, automated acceptance criteria verification, and global SHAP interpretability.</p>
+                        </div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <a href="results.csv" download="eduguard_cv_results.csv" class="btn btn-outline" style="background: var(--bg-surface); color: var(--color-teal); border: 1px solid var(--border-card);">
+                                📥 Download results.csv
+                            </a>
+                            <a href="shap_summary.png" target="_blank" class="btn btn-outline" style="background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border-card);">
+                                🔍 View Global SHAP Image ↗
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Performance Highlights KPI Grid -->
+                    <div class="kpi-grid" style="margin-bottom: 2rem;">
+                        <div class="kpi-card">
+                            <div class="kpi-card-accent" style="background: var(--color-teal);"></div>
+                            <div class="kpi-label">ROC-AUC Score</div>
+                            <div class="kpi-value" style="color: var(--color-teal);">91.98%</div>
+                            <div class="kpi-caption">± 1.00% across 5 folds (Target &ge; 85%)</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-card-accent" style="background: var(--color-low);"></div>
+                            <div class="kpi-label">Precision (Dropout)</div>
+                            <div class="kpi-value" style="color: var(--color-low);">87.50%</div>
+                            <div class="kpi-caption">± 2.67% (Alert fatigue minimized)</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-card-accent" style="background: var(--color-navy);"></div>
+                            <div class="kpi-label">Recall (Dropout)</div>
+                            <div class="kpi-value">71.36%</div>
+                            <div class="kpi-caption">± 0.49% (1,014 of 1,421 dropouts flagged)</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-card-accent" style="background: #9333ea;"></div>
+                            <div class="kpi-label">F1-Score (Dropout)</div>
+                            <div class="kpi-value" style="color: #9333ea;">78.59%</div>
+                            <div class="kpi-caption">± 1.08% (Harmonic mean of P &amp; R)</div>
+                        </div>
+                    </div>
+
+                    <!-- Acceptance Criteria Verification Matrix -->
+                    <div class="card" style="margin-bottom: 2rem;">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-title">
+                                    <span>🎯 Acceptance Criteria Verification (ACCEPTANCE.md)</span>
+                                </div>
+                                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">
+                                    Automated pass/fail evaluation against target thresholds defined prior to model training.
+                                </p>
+                            </div>
+                            <span class="card-badge">Audit Scorecard</span>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table" id="table-acceptance-scorecard">
+                                <thead>
+                                    <tr>
+                                        <th>Performance Criterion</th>
+                                        <th>Target Threshold</th>
+                                        <th>Random Forest (Production)</th>
+                                        <th>Logistic Regression (Baseline)</th>
+                                        <th>Status Badge</th>
+                                        <th>Viva Oral Defense Justification</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-acceptance-scorecard-body">
+                                    <!-- Populated dynamically via script.js -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Cross-Validation Benchmark Table (results.csv) -->
+                    <div class="card" style="margin-bottom: 2rem;">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-title">
+                                    <span>🔬 Stratified 5-Fold Cross-Validation Benchmark (results.csv)</span>
+                                </div>
+                                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">
+                                    Head-to-head empirical metrics computed across 5 stratified folds (Mean ± Standard Deviation).
+                                </p>
+                            </div>
+                            <span class="card-badge">Empirical Results</span>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table" id="table-cv-results">
+                                <thead>
+                                    <tr>
+                                        <th>Evaluated Model Architecture</th>
+                                        <th>Precision (Mean ± Std)</th>
+                                        <th>Recall (Mean ± Std)</th>
+                                        <th>F1-Score (Mean ± Std)</th>
+                                        <th>ROC-AUC (Mean ± Std)</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-cv-results-body">
+                                    <!-- Populated dynamically via script.js -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Global Feature Importance & SHAP Summary -->
+                    <div class="card" style="margin-bottom: 2rem;">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-title">
+                                    <span>🌐 Global Explainability &amp; Feature Importances</span>
+                                </div>
+                                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">
+                                    Cohort-wide SHAP attribution analysis across all 4,424 students and 36 predictive features.
+                                </p>
+                            </div>
+                            <span class="card-badge">TreeExplainer</span>
+                        </div>
+
+                        <div class="reports-shap-grid">
+                            <!-- Left: shap_summary.png image -->
+                            <div class="report-img-wrapper">
+                                <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
+                                    Global SHAP Summary Plot (shap_summary.png)
+                                </h4>
+                                <div class="shap-img-container">
+                                    <img src="shap_summary.png" id="reports-shap-image" alt="Global SHAP Summary Plot" loading="lazy">
+                                </div>
+                                <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 8px; line-height: 1.4;">
+                                    Bar length indicates the mean absolute SHAP value: mean(|SHAP|). Academic progression features in the 2nd and 1st semesters dominate the model's predictive decisions.
+                                </p>
+                            </div>
+
+                            <!-- Right: Top 10 Global Features Table -->
+                            <div>
+                                <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
+                                    Top 10 Global Feature Rankings
+                                </h4>
+                                <div class="table-container" style="border: 1px solid var(--border-subtle); border-radius: var(--border-radius-sm);">
+                                    <table class="data-table" id="table-global-features">
+                                        <thead>
+                                            <tr>
+                                                <th>Rank</th>
+                                                <th>Feature Name</th>
+                                                <th>Mean |SHAP|</th>
+                                                <th>Domain</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="table-global-features-body">
+                                            <!-- Populated dynamically via script.js -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Methodological & Institutional Limitations Box -->
+                    <div class="card" style="border-left: 4px solid #f59e0b;">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span>⚠️ Methodological &amp; Practical Limitations (Viva Requirement)</span>
+                            </div>
+                            <span class="card-badge" style="background: rgba(245, 158, 11, 0.15); color: #d97706; border-color: rgba(245, 158, 11, 0.3);">
+                                Critical Appraisal
+                            </span>
+                        </div>
+                        <div style="font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary);">
+                            <p style="margin-bottom: 1rem;">
+                                An honest, transparent discussion of limitations is required for university oral defense and ethical machine learning deployment:
+                            </p>
+                            <div class="limitations-grid" id="reports-limitations-list">
+                                <!-- Populated dynamically via script.js -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- =========================================================
+                     8. ABOUT & VIVA DEFENSE DOSSIER PAGE (Step 8)
+                     ========================================================= -->
+                <div class="page-view" id="page-about" style="display: none;">
+                    <!-- About Page Header -->
+                    <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h1 class="page-title">ℹ️ System Architecture & Viva Defense Dossier</h1>
+                            <p class="page-subtitle">
+                                End-to-End Machine Learning Pipeline, Game-Theoretic Explainability (SHAP), and Ethical Decision Support
+                            </p>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <a href="https://github.com/umairkhan1626/Student-Dropout-Prediction-System" target="_blank" rel="noopener" class="btn btn-sm btn-outline" style="border-color: var(--border-card); background: var(--bg-surface); text-decoration: none;">
+                                <span>🐙 GitHub Repository</span>
+                            </a>
+                            <button class="btn btn-sm btn-primary" id="btn-toggle-all-viva">
+                                <span>📖 Expand All Viva Q&A</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Mission & Ethical Mandate Card -->
+                    <div class="card" style="margin-bottom: 2rem; border-left: 4px solid var(--color-primary);">
+                        <div class="card-header" style="margin-bottom: 0.75rem;">
+                            <h2 class="card-title">🛡️ Project Mission & Ethical Non-Punitive Mandate</h2>
+                            <span class="card-badge" style="background: rgba(37, 99, 235, 0.1); color: var(--color-primary); border-color: rgba(37, 99, 235, 0.2);">
+                                Core Philosophy
+                            </span>
+                        </div>
+                        <p style="font-size: 0.95rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 1.5rem;">
+                            <b>EduGuard</b> is an explainable machine learning decision-support platform designed to empower university academic advisors and counselors with proactive, transparent, and non-punitive early interventions. Rather than acting as an autonomous gatekeeper, EduGuard translates complex statistical attrition probabilities into actionable, human-interpretable risk drivers, enabling counselors to provide targeted academic, financial, and engagement support before students disengage.
+                        </p>
+
+                        <div class="limitations-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+                            <div class="limitation-card">
+                                <span class="limitation-icon">🛡️</span>
+                                <div>
+                                    <div class="limitation-title">Non-Punitive Mandate</div>
+                                    <div class="limitation-desc">
+                                        Risk scores are strictly utilized to allocate proactive support, tutoring, and emergency aid—never to restrict enrollment, penalize students, or automate negative sanctions.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="limitation-card">
+                                <span class="limitation-icon">🔍</span>
+                                <div>
+                                    <div class="limitation-title">Local Interpretability</div>
+                                    <div class="limitation-desc">
+                                        Black-box predictions are prohibited. Every student profile is unpacked through exact Lundberg & Lee TreeSHAP Shapley values, highlighting specific positive drivers and protective buffers.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="limitation-card">
+                                <span class="limitation-icon">🧑‍🏫</span>
+                                <div>
+                                    <div class="limitation-title">Human-in-the-Loop</div>
+                                    <div class="limitation-desc">
+                                        Algorithms only recommend; human advisors hold sole decision authority. Advisors review personalized counselor briefings, adjust outreach status, and tailor interventions.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="limitation-card">
+                                <span class="limitation-icon">🔒</span>
+                                <div>
+                                    <div class="limitation-title">Privacy & Governance</div>
+                                    <div class="limitation-desc">
+                                        Adheres to higher education privacy standards with full local model inference, zero external telemetry tracking, and transparent out-of-fold cross-validation auditing.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 7-Stage End-to-End Machine Learning Pipeline Grid -->
+                    <div class="card" style="margin-bottom: 2rem;">
+                        <div class="card-header">
+                            <div>
+                                <h2 class="card-title">⚙️ 7-Stage End-to-End Machine Learning Pipeline</h2>
+                                <p class="card-subtitle">
+                                    Systematic, mathematically grounded lifecycle from raw institutional cohort data to operational counselor triage
+                                </p>
+                            </div>
+                            <span class="card-badge" style="background: rgba(16, 185, 129, 0.1); color: var(--color-success); border-color: rgba(16, 185, 129, 0.2);">
+                                100% Production Ready
+                            </span>
+                        </div>
+
+                        <div class="pipeline-grid">
+                            <!-- Stage 1 -->
+                            <div class="pipeline-step-card">
+                                <div class="pipeline-step-header">
+                                    <div class="pipeline-step-number">01</div>
+                                    <span class="pipeline-step-badge">Ingestion</span>
+                                </div>
+                                <h3 class="pipeline-step-title">Data Ingestion & Binarization</h3>
+                                <p class="pipeline-step-desc">
+                                    Ingests the UCI Higher Education dataset (ID 697) comprising <b>4,424 student records</b> and <b>36 attributes</b> (demographic, socio-economic, 1st & 2nd semester academic performance).
+                                </p>
+                                <div class="pipeline-step-meta">
+                                    <span>Target: Dropout (1,421 / 32.1%) vs Retained (3,003 / 67.9%)</span>
+                                </div>
+                            </div>
+
+                            <!-- Stage 2 -->
+                            <div class="pipeline-step-card">
+                                <div class="pipeline-step-header">
+                                    <div class="pipeline-step-number">02</div>
+                                    <span class="pipeline-step-badge">Validation</span>
+                                </div>
+                                <h3 class="pipeline-step-title">Leakage-Free 5-Fold Cross-Validation</h3>
+                                <p class="pipeline-step-desc">
+                                    Evaluates candidate classifiers using Scikit-Learn <code>Pipeline</code> with <code>StandardScaler</code> fitted strictly on training folds to guarantee zero data leakage.
+                                </p>
+                                <div class="pipeline-step-meta">
+                                    <span>Production RF: <b>91.98% ROC-AUC</b>, <b>87.50% Precision</b>, <b>78.59% F1</b></span>
+                                </div>
+                            </div>
+
+                            <!-- Stage 3 -->
+                            <div class="pipeline-step-card">
+                                <div class="pipeline-step-header">
+                                    <div class="pipeline-step-number">03</div>
+                                    <span class="pipeline-step-badge">XAI</span>
+                                </div>
+                                <h3 class="pipeline-step-title">Game-Theoretic Explainability (TreeSHAP)</h3>
+                                <p class="pipeline-step-desc">
+                                    Computes an exact $4,424 \times 36$ SHAP matrix via Lundberg & Lee TreeExplainer. Decomposes each student's log-odds into additive Shapley values satisfying efficiency and symmetry axioms.
+                                </p>
+                                <div class="pipeline-step-meta">
+                                    <span>Exact local feature attributions (red = risk, teal = protective)</span>
+                                </div>
+                            </div>
+
+                            <!-- Stage 4 -->
+                            <div class="pipeline-step-card">
+                                <div class="pipeline-step-header">
+                                    <div class="pipeline-step-number">04</div>
+                                    <span class="pipeline-step-badge">Formulation</span>
+                                </div>
+                                <h3 class="pipeline-step-title">Situational Urgency Scoring</h3>
+                                <p class="pipeline-step-desc">
+                                    Disentangles statistical historical likelihood from immediate administrative crises via formula:
+                                    <code>0.4×(1-Tuition) + 0.3×Debtor + 0.3×(approved=0 ∧ enrolled>0)</code>.
+                                </p>
+                                <div class="pipeline-step-meta">
+                                    <span>Actionable urgency score scaled in range [0.0, 1.0]</span>
+                                </div>
+                            </div>
+
+                            <!-- Stage 5 -->
+                            <div class="pipeline-step-card">
+                                <div class="pipeline-step-header">
+                                    <div class="pipeline-step-number">05</div>
+                                    <span class="pipeline-step-badge">Triage</span>
+                                </div>
+                                <h3 class="pipeline-step-title">Priority-Ranked Triage Queue</h3>
+                                <p class="pipeline-step-desc">
+                                    Calculates composite Referral Priority: <code>Priority = Risk × (1 + w × Urgency)</code> with tunable weight $w \in [0.0, 2.0]$. Stratifies cohort into High (1,145), Medium (792), and Low (2,487).
+                                </p>
+                                <div class="pipeline-step-meta">
+                                    <span>1,937 eligible students ordered for counselor triage</span>
+                                </div>
+                            </div>
+
+                            <!-- Stage 6 -->
+                            <div class="pipeline-step-card">
+                                <div class="pipeline-step-header">
+                                    <div class="pipeline-step-number">06</div>
+                                    <span class="pipeline-step-badge">Matching</span>
+                                </div>
+                                <h3 class="pipeline-step-title">Capacity-Constrained Greedy Matching</h3>
+                                <p class="pipeline-step-desc">
+                                    Matches student primary SHAP domain (Academic, Financial, Engagement) to 6 advisor specialties under institutional caseload constraints (1,700 seats).
+                                </p>
+                                <div class="pipeline-step-meta">
+                                    <span>Fills 1,700 specialist slots; designates 237 overflow as Unassigned</span>
+                                </div>
+                            </div>
+
+                            <!-- Stage 7 -->
+                            <div class="pipeline-step-card">
+                                <div class="pipeline-step-header">
+                                    <div class="pipeline-step-number">07</div>
+                                    <span class="pipeline-step-badge">Architecture</span>
+                                </div>
+                                <h3 class="pipeline-step-title">Dual-Interface Modern SaaS Architecture</h3>
+                                <p class="pipeline-step-desc">
+                                    FastAPI async REST backend serving 10 endpoints paired with a responsive Vanilla JS/CSS client (dark/light themes, Chart.js) and legacy Streamlit viva fallback.
+                                </p>
+                                <div class="pipeline-step-meta">
+                                    <span>Decoupled API architecture + state persistence in <code>state.json</code></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Technology Stack Badges Card -->
+                    <div class="card" style="margin-bottom: 2rem;">
+                        <div class="card-header">
+                            <div>
+                                <h2 class="card-title">💻 Technical Stack & Implementation Frameworks</h2>
+                                <p class="card-subtitle">
+                                    Enterprise-ready open-source libraries ensuring high throughput, deterministic reproducibility, and zero build tool overhead
+                                </p>
+                            </div>
+                            <span class="card-badge">Zero Build Dependencies</span>
+                        </div>
+
+                        <div class="tech-stack-grid">
+                            <div class="tech-badge-card">
+                                <div class="tech-badge-header">
+                                    <span class="tech-badge-icon">⚡</span>
+                                    <h4 class="tech-badge-title">FastAPI</h4>
+                                </div>
+                                <div class="tech-badge-role">REST API Backend Engine</div>
+                                <p class="tech-badge-desc">
+                                    High-performance asynchronous ASGI framework with automatic OpenAPI/Swagger documentation, Pydantic data validation, and sub-millisecond JSON response times.
+                                </p>
+                            </div>
+
+                            <div class="tech-badge-card">
+                                <div class="tech-badge-header">
+                                    <span class="tech-badge-icon">🌲</span>
+                                    <h4 class="tech-badge-title">Scikit-Learn</h4>
+                                </div>
+                                <div class="tech-badge-role">Machine Learning & Validation</div>
+                                <p class="tech-badge-desc">
+                                    Robust tabular classification via Random Forest and Logistic Regression, featuring leakage-free Pipeline encapsulation and Stratified 5-Fold Cross-Validation.
+                                </p>
+                            </div>
+
+                            <div class="tech-badge-card">
+                                <div class="tech-badge-header">
+                                    <span class="tech-badge-icon">🔍</span>
+                                    <h4 class="tech-badge-title">SHAP Library</h4>
+                                </div>
+                                <div class="tech-badge-role">Game-Theoretic Explainability</div>
+                                <p class="tech-badge-desc">
+                                    High-speed TreeExplainer implementation computing exact local feature attributions $\phi_i$ with zero sampling variance across all 4,424 student records.
+                                </p>
+                            </div>
+
+                            <div class="tech-badge-card">
+                                <div class="tech-badge-header">
+                                    <span class="tech-badge-icon">📊</span>
+                                    <h4 class="tech-badge-title">Chart.js (CDN)</h4>
+                                </div>
+                                <div class="tech-badge-role">Client-Side Data Visualization</div>
+                                <p class="tech-badge-desc">
+                                    Lightweight HTML5 Canvas rendering engine driving interactive risk doughnuts, top-course distributions, and responsive horizontal SHAP feature contribution bar charts.
+                                </p>
+                            </div>
+
+                            <div class="tech-badge-card">
+                                <div class="tech-badge-header">
+                                    <span class="tech-badge-icon">🐼</span>
+                                    <h4 class="tech-badge-title">Pandas & NumPy</h4>
+                                </div>
+                                <div class="tech-badge-role">Vectorized Matrix Operations</div>
+                                <p class="tech-badge-desc">
+                                    Vectorized data processing for rapid cohort slicing, dynamic multi-field sorting, situational urgency calculation, and live CSV report generation.
+                                </p>
+                            </div>
+
+                            <div class="tech-badge-card">
+                                <div class="tech-badge-header">
+                                    <span class="tech-badge-icon">🌐</span>
+                                    <h4 class="tech-badge-title">Vanilla HTML5 / CSS3 / ES6+</h4>
+                                </div>
+                                <div class="tech-badge-role">Native Web User Interface</div>
+                                <p class="tech-badge-desc">
+                                    Modern CSS custom properties (design tokens), flexbox/grid layouts, debounced search filters, accessible ARIA attributes, and zero npm bundling requirements.
+                                </p>
+                            </div>
+
+                            <div class="tech-badge-card">
+                                <div class="tech-badge-header">
+                                    <span class="tech-badge-icon">🎈</span>
+                                    <h4 class="tech-badge-title">Streamlit</h4>
+                                </div>
+                                <div class="tech-badge-role">Viva Defense Fallback</div>
+                                <p class="tech-badge-desc">
+                                    Preserved in <code>app.py</code> on port 8501 as an exploratory dashboard and instant presentation fallback during viva oral examination.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Viva Voce Oral Defense Interactive Guide -->
+                    <div class="card" style="margin-bottom: 2rem;">
+                        <div class="card-header">
+                            <div>
+                                <h2 class="card-title">🎓 Viva Voce Oral Defense Preparation Guide</h2>
+                                <p class="card-subtitle">
+                                    Anticipated academic examination questions, theoretical justifications, and rigorous defenses for university evaluators
+                                </p>
+                            </div>
+                            <span class="card-badge" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6; border-color: rgba(139, 92, 246, 0.2);">
+                                10 Core Justifications
+                            </span>
+                        </div>
+
+                        <div class="viva-accordion" id="viva-accordion">
+                            <!-- Q1 -->
+                            <div class="viva-item">
+                                <button class="viva-question" type="button">
+                                    <span class="viva-q-badge">Q1</span>
+                                    <span class="viva-q-text">Why choose Random Forest over Deep Learning (e.g. Neural Networks) for this tabular dataset?</span>
+                                    <span class="viva-chevron">▼</span>
+                                </button>
+                                <div class="viva-answer">
+                                    <p>
+                                        Tabular datasets with heterogeneous features (categorical demographics, ordinal socio-economic factors, and continuous GPA/credit counts) are proven by extensive empirical benchmarks (such as Grinsztajn et al., <i>NeurIPS 2022</i>) to perform better or equal on tree-based ensembles compared to Deep Neural Networks.
+                                    </p>
+                                    <ul>
+                                        <li><b>Sample Efficiency:</b> With $N = 4,424$ samples, deep neural networks are prone to severe overfitting without aggressive inductive biases or hyperparameter tuning.</li>
+                                        <li><b>Exact Game-Theoretic XAI:</b> Tree-based models allow polynomial-time exact TreeSHAP computation in $\mathcal{O}(TLD^2)$ time ($T$ trees, $L$ leaves, depth $D$), whereas neural networks require KernelSHAP or Integrated Gradients which introduce sampling variance and high latency.</li>
+                                        <li><b>Empirical Evidence:</b> Our 5-fold cross-validation demonstrated that Random Forest achieved an outstanding <b>91.98% ROC-AUC</b> with high stability ($\pm 1.00\%$), outperforming baseline Logistic Regression (91.82%).</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Q2 -->
+                            <div class="viva-item">
+                                <button class="viva-question" type="button">
+                                    <span class="viva-q-badge">Q2</span>
+                                    <span class="viva-q-text">Why binarize the 3-class target into "Dropout" vs "Retained" (Graduate + Enrolled)?</span>
+                                    <span class="viva-chevron">▼</span>
+                                </button>
+                                <div class="viva-answer">
+                                    <p>
+                                        The raw UCI dataset contains three target classes: <i>Dropout</i> (1,421), <i>Graduate</i> (2,209), and <i>Enrolled</i> (794). Binarizing into Dropout vs Retained was chosen based on core institutional intervention logic:
+                                    </p>
+                                    <ul>
+                                        <li><b>Intervention Asymmetry:</b> From a university retention perspective, active enrolled students and successful graduates represent institutional continuity; the urgent risk cohort requiring advisor resources is solely the <i>Dropout</i> segment.</li>
+                                        <li><b>Temporal Snapshot Reality:</b> The dataset records an observation snapshot; students labeled as "Enrolled" are actively progressing and have not failed. Merging them into "Retained" prevents misclassifying actively studying students as attrition failures.</li>
+                                        <li><b>Statistical Optimization:</b> Binarization simplifies multi-class confusion and maximizes statistical recall (71.36%) and precision (87.50%) on the minority class of interest ($32.1\%$).</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Q3 -->
+                            <div class="viva-item">
+                                <button class="viva-question" type="button">
+                                    <span class="viva-q-badge">Q3</span>
+                                    <span class="viva-q-text">How was data leakage strictly prevented during model training and evaluation?</span>
+                                    <span class="viva-chevron">▼</span>
+                                </button>
+                                <div class="viva-answer">
+                                    <p>
+                                        Data leakage occurs when information from outside the training dataset is inadvertently used to fit feature transformers or model weights. In EduGuard:
+                                    </p>
+                                    <ul>
+                                        <li><b>Scikit-Learn Pipeline Encapsulation:</b> Feature preprocessing (e.g., <code>StandardScaler</code>) was packaged inside an atomic <code>Pipeline</code> object. The scaler's mean $\mu$ and standard deviation $\sigma$ were computed strictly on the training partition ($k-1$ folds).</li>
+                                        <li><b>Independent Test Evaluation:</b> Test folds were transformed using the frozen training fold statistics without refitting.</li>
+                                        <li><b>Out-of-Fold Risk Scores:</b> All risk probabilities in <code>risk_scores.csv</code> represent true out-of-fold predictions produced across stratified folds, ensuring that zero student risk scores reflect overfitted training evaluation.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Q4 -->
+                            <div class="viva-item">
+                                <button class="viva-question" type="button">
+                                    <span class="viva-q-badge">Q4</span>
+                                    <span class="viva-q-text">What is the theoretical advantage of SHAP TreeExplainer over classical Gini Impurity?</span>
+                                    <span class="viva-chevron">▼</span>
+                                </button>
+                                <div class="viva-answer">
+                                    <p>
+                                        Classical feature importances (such as Gini Impurity or Mean Decrease in Impurity) suffer from two fundamental weaknesses: they are exclusively <b>global</b> (providing zero explanation for why Student #2237 is at risk) and they exhibit significant <b>cardinality bias</b> toward continuous features.
+                                    </p>
+                                    <ul>
+                                        <li><b>Cooperative Game Theory Axioms:</b> Lundberg & Lee's TreeSHAP satisfies four formal mathematical properties: <i>Efficiency</i> (local feature attributions sum up to $f(x) - \mathbb{E}[f(x)]$), <i>Symmetry</i>, <i>Dummy Player</i>, and <i>Additivity</i>.</li>
+                                        <li><b>Local Directionality:</b> While Gini only outputs a non-negative scalar, SHAP indicates both magnitude and direction—showing whether 2nd semester approved units pushed risk up ($+0.34$, red) or buffered risk down ($-0.18$, teal) for a specific individual.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Q5 -->
+                            <div class="viva-item">
+                                <button class="viva-question" type="button">
+                                    <span class="viva-q-badge">Q5</span>
+                                    <span class="viva-q-text">Why introduce Situational Urgency instead of sorting by ML Risk alone?</span>
+                                    <span class="viva-chevron">▼</span>
+                                </button>
+                                <div class="viva-answer">
+                                    <p>
+                                        Machine learning models evaluate historical academic trajectory over time (e.g., prior semester GPA, entrance scores). However, university dropout dynamics frequently involve acute, operational crises:
+                                    </p>
+                                    <ul>
+                                        <li><b>Imminent Institutional Disqualification:</b> A student with a moderate statistical risk of $0.55$ who has unpaid tuition fees and zero approved units faces immediate administrative disenrollment at the end of the current term.</li>
+                                        <li><b>Composite Triage Formula:</b> By computing $\text{Priority} = \text{Risk} \times (1 + w \times \text{Urgency})$ with $w \in [0.0, 2.0]$, advisors can elevate students facing acute administrative deadlines above those who have high statistical risk but stable enrollment standing.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Q6 -->
+                            <div class="viva-item">
+                                <button class="viva-question" type="button">
+                                    <span class="viva-q-badge">Q6</span>
+                                    <span class="viva-q-text">How does the capacity-constrained greedy algorithm handle advisor overload?</span>
+                                    <span class="viva-chevron">▼</span>
+                                </button>
+                                <div class="viva-answer">
+                                    <p>
+                                        Real university counseling centers have finite advisor headcount. In our institutional model, 6 advisors offer a total capacity of 1,700 caseload slots, whereas 1,937 students fall into Medium or High risk tiers:
+                                    </p>
+                                    <ul>
+                                        <li><b>Greedy Priority Allocation:</b> Students are sorted descending by composite referral priority. The highest-need students are assigned first to their primary SHAP specialty advisor.</li>
+                                        <li><b>Graceful Overflow Management:</b> When an advisor reaches 100% capacity, the algorithm falls back to generalist advisors. Once all 1,700 seats are saturated, the remaining 237 students are designated as <i>"Unassigned - capacity full"</i>.</li>
+                                        <li><b>No Silent Loss:</b> Rather than silently discarding or overloading counselors past safe limits, the overflow cohort is prominently surfaced in the UI to justify requests for additional counseling resources.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Q7 -->
+                            <div class="viva-item">
+                                <button class="viva-question" type="button">
+                                    <span class="viva-q-badge">Q7</span>
+                                    <span class="viva-q-text">What guardrails prevent punitive or discriminatory automated actions?</span>
+                                    <span class="viva-chevron">▼</span>
+                                </button>
+                                <div class="viva-answer">
+                                    <p>
+                                        EduGuard enforces strict ethical design patterns to prevent algorithmic harm:
+                                    </p>
+                                    <ul>
+                                        <li><b>Strict Decision-Support Framing:</b> The platform never dispatches automated disciplinary notices or changes enrollment statuses. It serves exclusively as a counselor workbench.</li>
+                                        <li><b>NoRiskFactorsError Guardrail:</b> If a student has no positive risk factors (e.g., low-risk student), the system renders an explicit informational banner preventing counselors from inventing speculative deficits.</li>
+                                        <li><b>Audit Trail:</b> All advisor assignments and case status updates are logged with timestamps in <code>state.json</code>, enabling transparent oversight.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Q8 -->
+                            <div class="viva-item">
+                                <button class="viva-question" type="button">
+                                    <span class="viva-q-badge">Q8</span>
+                                    <span class="viva-q-text">How are local SHAP factors categorized into Academic, Financial, and Engagement specialties?</span>
+                                    <span class="viva-chevron">▼</span>
+                                </button>
+                                <div class="viva-answer">
+                                    <p>
+                                        To enable specialized counselor routing, the 36 raw features are mapped into 3 domain clusters:
+                                    </p>
+                                    <ul>
+                                        <li><b>Academic Specialty:</b> 1st & 2nd semester approved units, evaluated units, grade averages, previous qualifications, entrance qualifications.</li>
+                                        <li><b>Financial Specialty:</b> Tuition fees up to date, debtor status, scholarship holder, parental educational/employment status.</li>
+                                        <li><b>Engagement Specialty:</b> Course selection, daytime vs evening attendance, enrolled units vs approved units ratio, application order, age at enrollment.</li>
+                                    </ul>
+                                    <p>
+                                        The dominant positive SHAP attribution determines whether the student receives an Academic, Financial, or Engagement advisor referral.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Q9 -->
+                            <div class="viva-item">
+                                <button class="viva-question" type="button">
+                                    <span class="viva-q-badge">Q9</span>
+                                    <span class="viva-q-text">Why build a decoupled FastAPI + Vanilla JS SPA instead of only Streamlit?</span>
+                                    <span class="viva-chevron">▼</span>
+                                </button>
+                                <div class="viva-answer">
+                                    <p>
+                                        Streamlit is excellent for internal exploratory prototypes, but has structural limitations in enterprise settings (session reruns on every interaction, high WebSocket overhead, and coupled state).
+                                    </p>
+                                    <ul>
+                                        <li><b>RESTful Decoupling:</b> The FastAPI backend exposes 10 modular REST endpoints with OpenAPI documentation, allowing third-party LMS integration (e.g., Canvas, Moodle, Ellucian Banner).</li>
+                                        <li><b>Zero-Dependency Client:</b> The Vanilla JS frontend delivers instantaneous client-side filtering, sorting, pagination, and theme switching without npm bundle bloat.</li>
+                                        <li><b>Defense Redundancy:</b> Preserving <code>app.py</code> on port 8501 guarantees high operational resilience during university examination.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Q10 -->
+                            <div class="viva-item">
+                                <button class="viva-question" type="button">
+                                    <span class="viva-q-badge">Q10</span>
+                                    <span class="viva-q-text">What are the primary methodological limitations of this study?</span>
+                                    <span class="viva-chevron">▼</span>
+                                </button>
+                                <div class="viva-answer">
+                                    <p>
+                                        Academic rigor requires transparent acknowledgment of constraints:
+                                    </p>
+                                    <ul>
+                                        <li><b>Single-Institution Context:</b> Data originates from a single Portuguese polytechnic institute (2008–2019). Institutional tuition structures and academic regulations may differ in other countries.</li>
+                                        <li><b>Simulated Counselor Capacities:</b> Caseload quotas (1,700 seats) and advisor specialties are modeled from institutional counseling norms rather than institutional telemetry.</li>
+                                        <li><b>Out-of-Fold Estimation:</b> Risk scores represent out-of-fold probabilistic estimates; prospective real-world deployment would require continuous drift monitoring and annual re-training.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project Metadata & Defense Dossier Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2 class="card-title">📋 Academic Project Metadata</h2>
+                                <p class="card-subtitle">Formal university examination details and dataset citations</p>
+                            </div>
+                            <span class="card-badge" style="background: rgba(37, 99, 235, 0.1); color: var(--color-primary); border-color: rgba(37, 99, 235, 0.2);">
+                                Viva Defense Dossier
+                            </span>
+                        </div>
+
+                        <div class="reports-kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 1.5rem;">
+                            <div class="report-kpi-card">
+                                <div class="report-kpi-label">Project Title</div>
+                                <div class="report-kpi-value" style="font-size: 1.1rem; color: var(--text-primary); font-weight: 700;">EduGuard</div>
+                                <div class="report-kpi-meta">Student Retention & XAI System</div>
+                            </div>
+                            <div class="report-kpi-card">
+                                <div class="report-kpi-label">Principal Author</div>
+                                <div class="report-kpi-value" style="font-size: 1.1rem; color: var(--text-primary); font-weight: 700;">Umair Khan</div>
+                                <div class="report-kpi-meta">Individual Final AI Project</div>
+                            </div>
+                            <div class="report-kpi-card">
+                                <div class="report-kpi-label">Defense Deadline</div>
+                                <div class="report-kpi-value" style="font-size: 1.1rem; color: var(--color-primary); font-weight: 700;">Nov 15, 2026</div>
+                                <div class="report-kpi-meta">Oral Viva Examination Target</div>
+                            </div>
+                            <div class="report-kpi-card">
+                                <div class="report-kpi-label">Benchmark Dataset</div>
+                                <div class="report-kpi-value" style="font-size: 1.1rem; color: var(--text-primary); font-weight: 700;">UCI #697</div>
+                                <div class="report-kpi-meta">4,424 records • 36 features</div>
+                            </div>
+                        </div>
+
+                        <div style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
+                            <b>Citation Reference:</b> Realinho, V., Vieira, M., Machado, J., & Baptist, L. (2021). <i>Predict Students' Dropout and Academic Success</i>. UCI Machine Learning Repository. <a href="https://doi.org/10.24432/C5MC89" target="_blank" rel="noopener" style="color: var(--color-primary);">https://doi.org/10.24432/C5MC89</a>.
+                        </div>
+                    </div>
+                </div>
 
             </main>
         </div>
@@ -897,6 +1620,6 @@
     <div class="toast-container" id="toast-container"></div>
 
     <!-- Main JavaScript Logic -->
-    <script src="script.js"></script>
+    <script src="script.js?v=8.0"></script>
 </body>
 </html>

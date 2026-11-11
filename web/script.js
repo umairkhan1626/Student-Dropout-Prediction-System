@@ -200,6 +200,18 @@ function navigateTo(pageName) {
             assignmentsView.style.display = "block";
             loadAssignmentsPageData();
         }
+    } else if (pageName === "reports") {
+        const reportsView = document.getElementById("page-reports");
+        if (reportsView) {
+            reportsView.style.display = "block";
+            loadReportsPageData();
+        }
+    } else if (pageName === "about") {
+        const aboutView = document.getElementById("page-about");
+        if (aboutView) {
+            aboutView.style.display = "block";
+            loadAboutPageData();
+        }
     } else {
         renderPlaceholderPage(pageName);
     }
@@ -1924,76 +1936,230 @@ async function executeResetAssignments() {
 }
 
 // ============================================================================
-// 4. PLACEHOLDER PAGE RENDERER (For Steps 7+)
+// 3G. REPORTS & EVALUATION PAGE LOGIC (Step 7)
 // ============================================================================
 
 /**
- * Renders informative placeholder view for pages that will be built in subsequent steps.
+ * Loads empirical model validation metrics and acceptance scorecard from GET /api/metrics.
+ */
+async function loadReportsPageData() {
+    try {
+        const response = await fetch("/api/metrics");
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+
+        // 1. Render Acceptance Criteria Scorecard
+        renderAcceptanceScorecard(data.acceptance_scorecard);
+
+        // 2. Render 5-Fold Cross-Validation Benchmark Table (results.csv)
+        renderCrossValidationTable(data.cross_validation_results);
+
+        // 3. Render Top 10 Global Features Table
+        renderGlobalFeaturesTable(data.global_feature_importance);
+
+        // 4. Render Methodological Limitations Callout Cards
+        renderLimitationsList(data.limitations);
+
+    } catch (err) {
+        console.error("[EduGuard] Failed to load reports data:", err);
+        showToast("Error loading model reports data.", "error");
+    }
+}
+
+/**
+ * Renders the Acceptance Criteria scorecard verification matrix.
+ */
+function renderAcceptanceScorecard(scorecard) {
+    const tbody = document.getElementById("table-acceptance-scorecard-body");
+    if (!tbody || !scorecard) return;
+
+    tbody.innerHTML = scorecard.map(item => {
+        const isPass = item.passed;
+        const badgeClass = isPass ? "badge-low" : "badge-med";
+        const icon = isPass ? "✅" : "⚠️";
+
+        return `
+            <tr>
+                <td><b>${item.criterion}</b></td>
+                <td><code>${item.target}</code></td>
+                <td><b style="color: var(--color-teal);">${item.achieved_random_forest}</b></td>
+                <td><span>${item.achieved_logistic_regression}</span></td>
+                <td>
+                    <span class="badge ${badgeClass}">
+                        ${icon} ${item.status_badge}
+                    </span>
+                </td>
+                <td style="font-size: 0.82rem; color: var(--text-secondary); max-width: 280px; line-height: 1.4;">
+                    ${item.viva_justification}
+                </td>
+            </tr>
+        `;
+    }).join("");
+}
+
+/**
+ * Renders the 5-Fold Cross-Validation results table from results.csv.
+ */
+function renderCrossValidationTable(results) {
+    const tbody = document.getElementById("table-cv-results-body");
+    if (!tbody || !results) return;
+
+    tbody.innerHTML = results.map(row => {
+        const isRF = row.Model.includes("Random Forest");
+        const statusBadge = isRF ? '<span class="badge badge-low">Production</span>' : '<span class="badge badge-med">Baseline</span>';
+
+        return `
+            <tr>
+                <td>
+                    <b>${row.Model}</b>
+                </td>
+                <td>${(row.Precision_Mean * 100).toFixed(2)}% ± ${(row.Precision_Std * 100).toFixed(2)}%</td>
+                <td>${(row.Recall_Mean * 100).toFixed(2)}% ± ${(row.Recall_Std * 100).toFixed(2)}%</td>
+                <td>${(row.F1_Mean * 100).toFixed(2)}% ± ${(row.F1_Std * 100).toFixed(2)}%</td>
+                <td><b style="color: var(--color-teal);">${(row.ROC_AUC_Mean * 100).toFixed(2)}% ± ${(row.ROC_AUC_Std * 100).toFixed(2)}%</b></td>
+                <td>${statusBadge}</td>
+            </tr>
+        `;
+    }).join("");
+}
+
+/**
+ * Renders the top 10 global predictive features (Mean Absolute SHAP).
+ */
+function renderGlobalFeaturesTable(features) {
+    const tbody = document.getElementById("table-global-features-body");
+    if (!tbody || !features) return;
+
+    tbody.innerHTML = features.map(item => {
+        const spec = (item.specialty || "Academic").toLowerCase();
+        let specBadgeClass = "specialty-academic";
+        if (spec === "financial") specBadgeClass = "specialty-financial";
+        else if (spec === "engagement") specBadgeClass = "specialty-engagement";
+
+        return `
+            <tr>
+                <td><b style="color: var(--color-teal);">#${item.rank}</b></td>
+                <td><b>${item.feature}</b></td>
+                <td><code>+${item.mean_abs_shap.toFixed(4)}</code></td>
+                <td>
+                    <span class="factor-specialty-badge ${specBadgeClass}">
+                        ${item.specialty}
+                    </span>
+                </td>
+            </tr>
+        `;
+    }).join("");
+}
+
+/**
+ * Renders the Methodological Limitations cards.
+ */
+function renderLimitationsList(limitations) {
+    const container = document.getElementById("reports-limitations-list");
+    if (!container || !limitations) return;
+
+    const icons = ["🏛️", "🧑‍💼", "📊"];
+    const titles = [
+        "Portuguese Higher Education Context",
+        "Simulated Counselor Roster & Capacities",
+        "Out-of-Fold Risk Probabilities"
+    ];
+
+    container.innerHTML = limitations.map((lim, idx) => {
+        const icon = icons[idx] || "⚠️";
+        const title = titles[idx] || `Limitation ${idx + 1}`;
+        const cleanDesc = lim.includes(":") ? lim.split(":").slice(1).join(":").trim() : lim;
+
+        return `
+            <div class="limitation-card">
+                <span class="limitation-icon">${icon}</span>
+                <div>
+                    <div class="limitation-title">${title}</div>
+                    <div class="limitation-desc">${cleanDesc}</div>
+                </div>
+            </div>
+        `;
+    }).join("");
+}
+
+// ============================================================================
+// 4. ABOUT & VIVA DEFENSE DOSSIER (Step 8)
+// ============================================================================
+
+/**
+ * Initializes the About & Viva Voce Dossier page (Step 8).
+ */
+function loadAboutPageData() {
+    initVivaAccordion();
+}
+
+/**
+ * Attaches interactive toggle handlers to the Viva Voce examination accordion.
+ */
+function initVivaAccordion() {
+    const vivaItems = document.querySelectorAll(".viva-item");
+    vivaItems.forEach(item => {
+        const questionBtn = item.querySelector(".viva-question");
+        if (!questionBtn) return;
+
+        // Prevent duplicate listener attachments on repeated page visits
+        if (questionBtn.dataset.listenerAttached === "true") return;
+        questionBtn.dataset.listenerAttached = "true";
+
+        questionBtn.addEventListener("click", () => {
+            const isActive = item.classList.contains("active");
+            item.classList.toggle("active", !isActive);
+        });
+    });
+
+    const toggleAllBtn = document.getElementById("btn-toggle-all-viva");
+    if (toggleAllBtn && toggleAllBtn.dataset.listenerAttached !== "true") {
+        toggleAllBtn.dataset.listenerAttached = "true";
+        let allExpanded = false;
+
+        toggleAllBtn.addEventListener("click", () => {
+            allExpanded = !allExpanded;
+            vivaItems.forEach(item => {
+                item.classList.toggle("active", allExpanded);
+            });
+            toggleAllBtn.innerHTML = allExpanded 
+                ? "<span>📕 Collapse All Viva Q&A</span>"
+                : "<span>📖 Expand All Viva Q&A</span>";
+        });
+    }
+}
+
+/**
+ * Fallback renderer for unmapped page identifiers.
  */
 function renderPlaceholderPage(pageName) {
+    if (pageName === "reports") {
+        navigateTo("reports");
+        return;
+    }
+    if (pageName === "about") {
+        navigateTo("about");
+        return;
+    }
+
     const container = document.getElementById(`page-${pageName}`);
     if (!container) return;
 
     container.style.display = "block";
-
-    const pageMeta = {
-        students: {
-            title: "Students Directory",
-            icon: "👥",
-            desc: "Search, filter by risk tier or counselor, and manage all 4,424 student retention records with pagination.",
-            step: "Coming in Step 3"
-        },
-        profile: {
-            title: `Student Profile (Selected: #${state.selectedStudentId})`,
-            icon: "👤",
-            desc: `Detailed game-theoretic SHAP risk factor breakdown, unscaled real values, and official advising briefing for Student #${state.selectedStudentId}.`,
-            step: "Coming in Step 4"
-        },
-        counselors: {
-            title: "Advising Team & Caseloads",
-            icon: "🧑‍💼",
-            desc: "View simulated counselor capacities across Academic, Financial, and Engagement specialties with real-time utilization bars.",
-            step: "Coming in Step 5"
-        },
-        assignments: {
-            title: "Capacity-Constrained Assignment Engine",
-            icon: "📋",
-            desc: "Run automated, priority-ordered auto-assignment matching student SHAP risk factors to specialized advisors.",
-            step: "Coming in Step 6"
-        },
-        reports: {
-            title: "Performance & Acceptance Scorecard",
-            icon: "📈",
-            desc: "Stratified 5-Fold cross-validation results, ACCEPTANCE.md pass/fail verification, and global SHAP insights.",
-            step: "Coming in Step 7"
-        },
-        about: {
-            title: "About EduGuard",
-            icon: "ℹ️",
-            desc: "End-to-end Explainable AI methodology, technological architecture, and viva examination documentation.",
-            step: "Project Overview"
-        }
-    };
-
-    const meta = pageMeta[pageName] || {
-        title: pageName,
-        icon: "📌",
-        desc: "Module details will be connected in subsequent steps.",
-        step: "In Progress"
-    };
-
     container.innerHTML = `
         <div class="page-header">
-            <h1 class="page-title">${meta.icon} ${meta.title}</h1>
-            <p class="page-subtitle">${meta.desc}</p>
+            <h1 class="page-title">📌 ${pageName}</h1>
+            <p class="page-subtitle">Module view</p>
         </div>
 
         <div class="placeholder-view">
-            <div class="placeholder-icon">${meta.icon}</div>
-            <h2 class="placeholder-title">${meta.title}</h2>
-            <p class="placeholder-desc">${meta.desc}</p>
+            <div class="placeholder-icon">📌</div>
+            <h2 class="placeholder-title">${pageName}</h2>
+            <p class="placeholder-desc">EduGuard modules are fully active.</p>
             <div style="display: flex; gap: 10px;">
-                <span class="badge badge-med">⚡ ${meta.step}</span>
                 <button class="btn btn-sm btn-primary" onclick="navigateTo('dashboard')">
                     ← Back to Dashboard
                 </button>

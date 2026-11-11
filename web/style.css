@@ -1661,6 +1661,340 @@ body {
     box-shadow: 0 2px 6px var(--color-teal-glow);
 }
 
+/* ============================================================================
+   REPORTS & ACCEPTANCE SCORECARD STYLES (Step 7)
+   ============================================================================ */
+
+.reports-shap-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.report-img-wrapper {
+    background: var(--bg-page);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius-sm);
+    padding: 1rem;
+}
+
+.shap-img-container {
+    background: #ffffff;
+    border: 1px solid var(--border-card);
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: var(--shadow-sm);
+}
+
+.shap-img-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    transition: transform var(--transition-normal);
+}
+
+.shap-img-container img:hover {
+    transform: scale(1.02);
+}
+
+.limitations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.limitation-card {
+    background: var(--bg-page);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius-sm);
+    padding: 1.1rem;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.limitation-icon {
+    font-size: 1.3rem;
+    line-height: 1;
+    margin-top: 2px;
+}
+
+.limitation-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.limitation-desc {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+/* ============================================================================
+   ABOUT & VIVA DEFENSE DOSSIER STYLES (Step 8)
+   ============================================================================ */
+
+/* 7-Stage Pipeline Grid */
+.pipeline-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+    margin-top: 0.5rem;
+}
+
+.pipeline-step-card {
+    background: var(--bg-page);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius-sm);
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.pipeline-step-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.pipeline-step-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.pipeline-step-number {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    letter-spacing: -0.5px;
+    font-variant-numeric: tabular-nums;
+}
+
+.pipeline-step-badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--color-primary);
+    border: 1px solid rgba(37, 99, 235, 0.2);
+}
+
+[data-theme="dark"] .pipeline-step-badge {
+    background: rgba(96, 165, 250, 0.15);
+    color: #93c5fd;
+    border-color: rgba(96, 165, 250, 0.3);
+}
+
+.pipeline-step-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.4rem;
+    line-height: 1.3;
+}
+
+.pipeline-step-desc {
+    font-size: 0.84rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 0.85rem;
+    flex-grow: 1;
+}
+
+.pipeline-step-meta {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    background: var(--bg-surface);
+    padding: 6px 10px;
+    border-radius: 4px;
+    border-left: 3px solid var(--color-primary);
+    line-height: 1.4;
+}
+
+/* Tech Stack Badges Grid */
+.tech-stack-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.tech-badge-card {
+    background: var(--bg-page);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius-sm);
+    padding: 1.15rem;
+    transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.tech-badge-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.tech-badge-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.tech-badge-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+.tech-badge-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.tech-badge-role {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
+[data-theme="dark"] .tech-badge-role {
+    color: #93c5fd;
+}
+
+.tech-badge-desc {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Viva Voce Oral Defense Accordion */
+.viva-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.viva-item {
+    background: var(--bg-page);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.viva-item.active {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.viva-question {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 1rem 1.25rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    color: var(--text-primary);
+    transition: background var(--transition-fast);
+}
+
+.viva-question:hover {
+    background: var(--bg-surface);
+}
+
+.viva-q-badge {
+    background: var(--color-primary);
+    color: white;
+    font-weight: 700;
+    font-size: 0.72rem;
+    padding: 3px 7px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.viva-q-text {
+    font-size: 0.92rem;
+    font-weight: 600;
+    flex-grow: 1;
+    line-height: 1.4;
+    color: var(--text-primary);
+}
+
+.viva-chevron {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    transition: transform 0.25s ease;
+    flex-shrink: 0;
+}
+
+.viva-item.active .viva-chevron {
+    transform: rotate(180deg);
+    color: var(--color-primary);
+}
+
+.viva-answer {
+    display: none;
+    padding: 0 1.25rem 1.25rem;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border-subtle);
+    margin-top: 0.25rem;
+    padding-top: 1rem;
+    animation: fadeIn 0.2s ease;
+}
+
+.viva-item.active .viva-answer {
+    display: block;
+}
+
+.viva-answer p {
+    margin-bottom: 0.75rem;
+}
+
+.viva-answer ul {
+    margin: 0.5rem 0 0.75rem;
+    padding-left: 1.25rem;
+}
+
+.viva-answer li {
+    margin-bottom: 0.4rem;
+}
+
+.viva-answer code {
+    font-size: 0.85em;
+    background: var(--bg-surface);
+    padding: 2px 5px;
+    border-radius: 4px;
+    border: 1px solid var(--border-subtle);
+}
+
 /* --- Accessibility (Reduced Motion) --- */
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -1678,6 +2012,10 @@ body {
     }
 
     .profile-body-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .reports-shap-grid {
         grid-template-columns: 1fr;
     }
     
