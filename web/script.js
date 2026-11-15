@@ -1,6 +1,6 @@
-/**
+﻿/**
  * ============================================================================
- * EduGuard — Student Retention Portal Frontend
+ * EduGuard  -  Student Retention Portal Frontend
  * Module: script.js
  * Description:
  *   Single-page application client built with vanilla JavaScript and Chart.js.
@@ -63,9 +63,10 @@ document.addEventListener("DOMContentLoaded", () => {
     initCounselorsEventListeners();
     initAssignmentsEventListeners();
     initModalEventListeners();
-    
-    // Fetch and render initial Dashboard view
-    loadDashboardData();
+    initSubnavTabs();
+
+    // Show landing page and prefetch live stats
+    initLanding();
 });
 
 /**
@@ -73,10 +74,23 @@ document.addEventListener("DOMContentLoaded", () => {
  */
 function initTheme() {
     document.documentElement.setAttribute("data-theme", state.theme);
+    updateThemeToggleIcon();
     const themeBtn = document.getElementById("btn-theme-toggle");
     if (themeBtn) {
-        themeBtn.textContent = state.theme === "dark" ? "☀️" : "🌙";
         themeBtn.addEventListener("click", toggleTheme);
+    }
+}
+
+/**
+ * Updates the theme toggle button with SVG icons (zero emojis).
+ */
+function updateThemeToggleIcon() {
+    const themeBtn = document.getElementById("btn-theme-toggle");
+    if (!themeBtn) return;
+    if (state.theme === "dark") {
+        themeBtn.innerHTML = `<svg class="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
+    } else {
+        themeBtn.innerHTML = `<svg class="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
     }
 }
 
@@ -88,11 +102,7 @@ function toggleTheme() {
     document.documentElement.setAttribute("data-theme", state.theme);
     localStorage.setItem("eduguard_theme", state.theme);
     
-    const themeBtn = document.getElementById("btn-theme-toggle");
-    if (themeBtn) {
-        themeBtn.textContent = state.theme === "dark" ? "☀️" : "🌙";
-    }
-
+    updateThemeToggleIcon();
     showToast(`Switched to ${state.theme} mode`, "info");
 
     // Re-render charts with updated theme text colors
@@ -111,7 +121,7 @@ function initCurrentDate() {
     if (datePill) {
         const options = { month: "short", day: "numeric", year: "numeric" };
         const todayStr = new Date().toLocaleDateString("en-US", options);
-        datePill.textContent = `📅 ${todayStr}`;
+        datePill.textContent = todayStr;
     }
 }
 
@@ -140,10 +150,10 @@ function initNavigation() {
         });
     }
 
-    // Brand click returns to dashboard
+    // Brand click returns to landing page
     const brand = document.getElementById("nav-brand");
     if (brand) {
-        brand.addEventListener("click", () => navigateTo("dashboard"));
+        brand.addEventListener("click", () => showLanding());
     }
 }
 
@@ -261,19 +271,141 @@ function initSidebarControls() {
 }
 
 /**
- * Sets up Landing Hero button interactions.
+ * Sets up Landing Hero button interactions (Non-technical friendly scroll).
  */
 function initHeroButtons() {
     const btnOpen = document.getElementById("btn-hero-dashboard");
     if (btnOpen) {
         btnOpen.addEventListener("click", () => {
             navigateTo("dashboard");
-            const appRoot = document.getElementById("app-root");
-            if (appRoot) {
-                appRoot.scrollIntoView({ behavior: "smooth" });
+            const target = document.getElementById("table-top-priority") || document.getElementById("app-root");
+            if (target) {
+                target.scrollIntoView({ behavior: "smooth" });
             }
         });
     }
+
+    const btnLearn = document.getElementById("btn-hero-learn");
+    if (btnLearn) {
+        btnLearn.addEventListener("click", (e) => {
+            e.preventDefault();
+            navigateTo("dashboard");
+            const howItWorks = document.getElementById("how-it-works");
+            if (howItWorks) {
+                howItWorks.scrollIntoView({ behavior: "smooth" });
+            }
+        });
+    }
+}
+
+// ============================================================================
+// 1B. LANDING PAGE — entry gate, stats loader, show/hide helpers
+// ============================================================================
+
+/**
+ * Wires landing page buttons and kicks off the live stats fetch.
+ */
+function initLanding() {
+    const btnTopbar   = document.getElementById("btn-lp-topbar-dash");
+    const btnDash     = document.getElementById("btn-lp-dashboard");
+    const btnStudents = document.getElementById("btn-lp-students");
+
+    if (btnTopbar)   btnTopbar.addEventListener("click",   () => enterApp("dashboard"));
+    if (btnDash)     btnDash.addEventListener("click",     () => enterApp("dashboard"));
+    if (btnStudents) btnStudents.addEventListener("click", () => enterApp("students"));
+
+    loadLandingStats();
+}
+
+/**
+ * Fetches live totals from /api/summary and /api/counselors.
+ * Uses only fields that actually exist in the API response.
+ * Hides the stats row entirely if the fetch fails.
+ */
+async function loadLandingStats() {
+    const elTotal    = document.getElementById("lstat-total");
+    const elSupport  = document.getElementById("lstat-support");
+    const elAdvisors = document.getElementById("lstat-advisors");
+    const statsRow   = document.getElementById("lp-stats-row");
+
+    try {
+        const [sumRes, couRes] = await Promise.all([
+            fetch("/api/summary?urgency_weight=0.5"),
+            fetch("/api/counselors")
+        ]);
+        if (!sumRes.ok || !couRes.ok) throw new Error("API unavailable");
+
+        const sumData = await sumRes.json();
+        const couData = await couRes.json();
+
+        // total_students and high_risk_count are confirmed API fields (renderKPIs uses them)
+        if (elTotal && sumData.total_students != null) {
+            elTotal.textContent = Number(sumData.total_students).toLocaleString();
+        }
+        if (elSupport && sumData.high_risk_count != null) {
+            elSupport.textContent = Number(sumData.high_risk_count).toLocaleString();
+        }
+        if (elAdvisors && couData.total_counselors != null) {
+            elAdvisors.textContent = Number(couData.total_counselors).toLocaleString();
+        }
+    } catch (_) {
+        // Hide stats row rather than show wrong numbers
+        if (statsRow) statsRow.style.display = "none";
+    }
+}
+
+/**
+ * Hides the landing page and shows the full app, then navigates to the given page.
+ */
+function enterApp(page) {
+    const landing = document.getElementById("landing-page");
+    const appRoot  = document.getElementById("app-root");
+
+    if (landing) landing.style.display = "none";
+    if (appRoot)  appRoot.style.display = "flex";
+
+    navigateTo(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/**
+ * Hides the app shell and returns to the landing page.
+ * Triggered by clicking the EduGuard logo in the sidebar navbar.
+ */
+function showLanding() {
+    const landing = document.getElementById("landing-page");
+    const appRoot  = document.getElementById("app-root");
+
+    if (appRoot)  appRoot.style.display = "none";
+    if (landing) {
+        landing.style.display = "block";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+}
+
+/**
+ * Sets up tab switching for Reports and About page sub-views.
+ */
+function initSubnavTabs() {
+    document.querySelectorAll(".subnav-tabs").forEach(container => {
+        const tabs = container.querySelectorAll(".subnav-tab");
+        tabs.forEach(tab => {
+            tab.addEventListener("click", () => {
+                const targetId = tab.getAttribute("data-tab");
+                if (!targetId) return;
+
+                tabs.forEach(t => t.classList.remove("active"));
+                tab.classList.add("active");
+
+                const parent = container.parentElement;
+                if (parent) {
+                    parent.querySelectorAll(".subnav-pane").forEach(pane => {
+                        pane.style.display = (pane.id === targetId) ? "block" : "none";
+                    });
+                }
+            });
+        });
+    });
 }
 
 // ============================================================================
@@ -329,9 +461,6 @@ function setLoadingState(isLoading) {
     const cards = [
         "kpi-total-students",
         "kpi-high-risk",
-        "kpi-med-risk",
-        "kpi-low-risk",
-        "kpi-avg-risk",
         "kpi-unassigned"
     ];
 
@@ -395,9 +524,6 @@ function animateCountUp(elementId, targetValue, duration = 1200, isPercentage = 
 function renderKPIs(data) {
     animateCountUp("kpi-total-students", data.total_students);
     animateCountUp("kpi-high-risk", data.high_risk_count);
-    animateCountUp("kpi-med-risk", data.medium_risk_count);
-    animateCountUp("kpi-low-risk", data.low_risk_count);
-    animateCountUp("kpi-avg-risk", data.average_risk * 100, 1200, true);
     animateCountUp("kpi-unassigned", data.unassigned_count);
 
     // Also update Hero statistics
@@ -564,17 +690,23 @@ function renderPriorityTable(topStudents) {
     tbody.innerHTML = "";
 
     if (!topStudents || topStudents.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 2rem; color: var(--text-muted);">No flagged students available for triage.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 2rem; color: var(--text-muted);">No flagged students available for triage.</td></tr>`;
         return;
     }
 
     topStudents.forEach((student, index) => {
         const tr = document.createElement("tr");
 
-        // Risk Badge class
+        // Risk Badge class & Plain English Label
+        let needLabel = "On Track";
         let riskBadgeClass = "badge-low";
-        if (student.risk_score >= 0.60) riskBadgeClass = "badge-high";
-        else if (student.risk_score >= 0.30) riskBadgeClass = "badge-med";
+        if (student.risk_score >= 0.60) {
+            riskBadgeClass = "badge-high";
+            needLabel = "Urgent Outreach";
+        } else if (student.risk_score >= 0.30) {
+            riskBadgeClass = "badge-med";
+            needLabel = "Needs Check-in";
+        }
 
         // Status Badge class
         let statusBadgeClass = "badge-flagged";
@@ -587,16 +719,13 @@ function renderPriorityTable(topStudents) {
             <td><b>Student #${student.student_id}</b></td>
             <td>
                 <span class="badge ${riskBadgeClass}">
-                    ${(student.risk_score * 100).toFixed(1)}%
+                    ${needLabel} (${(student.risk_score * 100).toFixed(0)}%)
                 </span>
             </td>
-            <td><code>${student.urgency.toFixed(2)}</code></td>
-            <td><b style="color: var(--color-navy);">${student.referral_priority.toFixed(4)}</b></td>
             <td>${student.assigned_counselor || "Unassigned"}</td>
-            <td><span class="badge ${statusBadgeClass}">● ${student.status || "Flagged"}</span></td>
             <td style="text-align: right;">
                 <button class="btn btn-sm btn-view" onclick="viewStudentProfile(${student.student_id})">
-                    View Profile →
+                    View Help Plan
                 </button>
             </td>
         `;
@@ -659,7 +788,7 @@ async function loadStudentsData() {
         if (counter) {
             const start = data.total > 0 ? (data.page - 1) * data.page_size + 1 : 0;
             const end = Math.min(data.page * data.page_size, data.total);
-            counter.textContent = `Showing ${start.toLocaleString()} – ${end.toLocaleString()} of ${data.total.toLocaleString()} students`;
+            counter.textContent = `Showing ${start.toLocaleString()} - ${end.toLocaleString()} of ${data.total.toLocaleString()} students`;
         }
 
         renderStudentsTable(data.students);
@@ -669,8 +798,8 @@ async function loadStudentsData() {
         console.error("[EduGuard] Failed to fetch students list:", err);
         tbody.innerHTML = `
             <tr>
-                <td colspan="8" style="text-align: center; padding: 2.5rem; color: var(--color-high);">
-                    ⚠️ Failed to load students directory: ${err.message}. Please verify the backend is online.
+                <td colspan="5" style="text-align: center; padding: 2.5rem; color: var(--color-high);">
+                    Failed to load students directory: ${err.message}. Please verify the backend is online.
                 </td>
             </tr>
         `;
@@ -690,8 +819,8 @@ function renderStudentsTable(students) {
     if (!students || students.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="8" style="text-align: center; padding: 3rem; color: var(--text-muted);">
-                    🔍 No student records matched your current filters. Try resetting the search or filter criteria.
+                <td colspan="5" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                    No student records matched your current filters. Try resetting the search or filter criteria.
                 </td>
             </tr>
         `;
@@ -702,32 +831,32 @@ function renderStudentsTable(students) {
         const tr = document.createElement("tr");
 
         let riskBadgeClass = "badge-low";
-        if (student.risk_score >= 0.60) riskBadgeClass = "badge-high";
-        else if (student.risk_score >= 0.30) riskBadgeClass = "badge-med";
+        let tierLabel = "On Track";
+        if (student.risk_score >= 0.60) {
+            riskBadgeClass = "badge-high";
+            tierLabel = "Urgent Outreach";
+        } else if (student.risk_score >= 0.30) {
+            riskBadgeClass = "badge-med";
+            tierLabel = "Needs Check-in";
+        }
 
         let statusBadgeClass = "badge-flagged";
         const stLower = (student.status || "").toLowerCase();
         if (stLower.includes("resolved")) statusBadgeClass = "badge-resolved";
         else if (stLower.includes("contacted")) statusBadgeClass = "badge-contacted";
 
-        const outcomeText = student.true_label === 1 ? "Dropout" : "Retained";
-        const outcomeColor = student.true_label === 1 ? "var(--color-high)" : "var(--color-low)";
-
         tr.innerHTML = `
             <td><b>#${student.student_id}</b></td>
             <td>
                 <span class="badge ${riskBadgeClass}">
-                    ${(student.risk_score * 100).toFixed(1)}% (${student.risk_tier})
+                    ${tierLabel} (${(student.risk_score * 100).toFixed(0)}%)
                 </span>
             </td>
-            <td><code>${student.urgency.toFixed(2)}</code></td>
-            <td><b style="color: var(--color-navy);">${student.referral_priority.toFixed(4)}</b></td>
             <td><span>${student.assigned_counselor || "Unassigned"}</span></td>
-            <td><span class="badge ${statusBadgeClass}">● ${student.status || "Flagged"}</span></td>
-            <td><span style="font-weight: 600; color: ${outcomeColor};">${outcomeText}</span></td>
+            <td><span class="badge ${statusBadgeClass}">${student.status || "Flagged"}</span></td>
             <td style="text-align: right; padding-right: 1.5rem; white-space: nowrap;">
-                <button class="btn btn-sm btn-view" onclick="viewStudentProfile(${student.student_id})" title="View Profile & SHAP breakdown">
-                    View
+                <button class="btn btn-sm btn-view" onclick="viewStudentProfile(${student.student_id})" title="View Student Help Plan">
+                    View Plan
                 </button>
                 <button class="btn btn-sm btn-outline" style="background: var(--bg-surface); color: var(--text-secondary); border: 1px solid var(--border-card); margin-left: 6px;" onclick="openAssignModal(${student.student_id}, '${escapeSingleQuotes(student.assigned_counselor)}')" title="Assign Advisor">
                     Assign
@@ -1100,7 +1229,7 @@ async function loadStudentProfile(studentId) {
     } catch (err) {
         console.error("[EduGuard] Failed to load student profile:", err);
         showToast(err.message, "error");
-        if (pre) pre.textContent = `⚠️ Error loading profile: ${err.message}`;
+        if (pre) pre.textContent = `Error loading profile: ${err.message}`;
     }
 }
 
@@ -1120,10 +1249,16 @@ function renderProfileDetails(data) {
 
     if (riskBadge) {
         let badgeClass = "badge-low";
-        if (data.risk_score >= 0.60) badgeClass = "badge-high";
-        else if (data.risk_score >= 0.30) badgeClass = "badge-med";
+        let tierText = "On Track";
+        if (data.risk_score >= 0.60) {
+            badgeClass = "badge-high";
+            tierText = "Urgent Outreach Needed";
+        } else if (data.risk_score >= 0.30) {
+            badgeClass = "badge-med";
+            tierText = "Active Monitoring";
+        }
         riskBadge.className = `badge ${badgeClass}`;
-        riskBadge.textContent = `${(data.risk_score * 100).toFixed(1)}% ${data.risk_tier} Risk`;
+        riskBadge.textContent = `${tierText} (${(data.risk_score * 100).toFixed(0)}%)`;
     }
 
     if (statusBadge) {
@@ -1132,17 +1267,17 @@ function renderProfileDetails(data) {
         if (stLower.includes("resolved")) sClass = "badge-resolved";
         else if (stLower.includes("contacted")) sClass = "badge-contacted";
         statusBadge.className = `badge ${sClass}`;
-        statusBadge.textContent = `● ${data.status}`;
+        statusBadge.textContent = `${data.status}`;
     }
 
     if (outcomePill) {
         const isDropout = data.true_label === 1;
-        outcomePill.textContent = `Benchmark: ${isDropout ? 'Dropout' : 'Retained'}`;
+        outcomePill.textContent = `Historical Cohort Label: ${isDropout ? 'Dropout' : 'Retained'}`;
         outcomePill.style.color = isDropout ? 'var(--color-high)' : 'var(--color-low)';
         outcomePill.style.borderColor = isDropout ? 'var(--color-high-border)' : 'var(--color-low-border)';
     }
 
-    // 2. Header KPI Stats Grid
+    // 2. Header KPI Stats Grid (Plain English & Human-Friendly)
     const kpiRisk = document.getElementById("profile-kpi-risk");
     const kpiTier = document.getElementById("profile-kpi-tier");
     const kpiUrg = document.getElementById("profile-kpi-urgency");
@@ -1150,10 +1285,18 @@ function renderProfileDetails(data) {
     const kpiAdv = document.getElementById("profile-kpi-advisor");
     const kpiAdvSub = document.getElementById("profile-kpi-advisor-sub");
 
-    if (kpiRisk) kpiRisk.textContent = `${(data.risk_score * 100).toFixed(1)}%`;
-    if (kpiTier) kpiTier.textContent = `${data.risk_tier} Risk Tier`;
-    if (kpiUrg) kpiUrg.textContent = data.urgency.toFixed(2);
-    if (kpiPri) kpiPri.textContent = data.referral_priority.toFixed(4);
+    if (kpiRisk) kpiRisk.textContent = `${(data.risk_score * 100).toFixed(0)}%`;
+    if (kpiTier) {
+        if (data.risk_score >= 0.60) kpiTier.textContent = "Urgent Outreach Needed";
+        else if (data.risk_score >= 0.30) kpiTier.textContent = "Active Monitoring Needed";
+        else kpiTier.textContent = "On Track / Steady Progress";
+    }
+    if (kpiUrg) {
+        kpiUrg.textContent = data.urgency >= 0.7 ? "High Urgency" : (data.urgency >= 0.3 ? "Moderate Urgency" : "Standard / Low");
+    }
+    if (kpiPri) {
+        kpiPri.textContent = (data.risk_score >= 0.60) ? "Urgent Priority" : ((data.risk_score >= 0.30) ? "Standard Priority" : "Routine Check-in");
+    }
     if (kpiAdv) kpiAdv.textContent = data.assigned_counselor || "Unassigned";
     if (kpiAdvSub) {
         kpiAdvSub.textContent = (data.assigned_counselor && data.assigned_counselor !== "Unassigned")
@@ -1177,14 +1320,14 @@ function renderProfileDetails(data) {
         if (warningBox) {
             warningBox.style.display = "flex";
             warningBox.innerHTML = `
-                <span style="font-size: 1.25rem;">⚠️</span>
+                <span style="font-weight: 800; color: #dc2626; border: 2px solid #dc2626; border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem; margin-right: 6px;">!</span>
                 <div>
-                    <strong>Guardrail Enforced:</strong> ${data.warning || "No risk-increasing factors exist for this student (all SHAP values ≤ 0). No generic briefing will be generated."}
+                    <strong>Guardrail Enforced:</strong> ${data.warning || "No risk-increasing factors exist for this student (all SHAP values 0 or less). No generic briefing will be generated."}
                 </div>
             `;
         }
         if (briefingText) {
-            briefingText.textContent = `[No generic briefing generated — Student profile exhibits zero positive risk drivers.]`;
+            briefingText.textContent = `[No generic briefing generated  -  Student profile exhibits zero positive risk drivers.]`;
         }
     } else {
         if (warningBox) warningBox.style.display = "none";
@@ -1215,7 +1358,7 @@ function renderProfileShapChart(localFactors) {
     const gridColor = isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)";
 
     const labels = sorted.map(f => {
-        const truncated = f.feature.length > 28 ? f.feature.substring(0, 26) + "…" : f.feature;
+        const truncated = f.feature.length > 28 ? f.feature.substring(0, 26) + "..." : f.feature;
         return `${truncated} (${f.real_value})`;
     });
 
@@ -1245,7 +1388,7 @@ function renderProfileShapChart(localFactors) {
                     ticks: { color: textColor },
                     title: {
                         display: true,
-                        text: "SHAP Impact on Dropout Probability (Δ)",
+                        text: "SHAP Impact on Dropout Probability",
                         color: textColor,
                         font: { size: 11, weight: 600 }
                     }
@@ -1307,7 +1450,7 @@ function renderTopFactorsList(topFactors) {
                         <span class="factor-specialty-badge ${specialtyClass}">${factor.specialty || "Academic"} Domain</span>
                     </div>
                 </div>
-                <div class="factor-shap-pill">+${factor.shap_value.toFixed(4)} Δ</div>
+                <div class="factor-shap-pill">+${factor.shap_value.toFixed(4)}</div>
             </div>
         `;
     }).join("");
@@ -1330,27 +1473,27 @@ function renderSuggestedActions(actions) {
     }
 
     container.innerHTML = actions.map(act => {
-        let icon = "💡";
+        let domainCode = "GEN";
         let title = "Advising Support";
         let desc = act;
 
         if (act.startsWith("Academic:")) {
-            icon = "📚";
+            domainCode = "ACAD";
             title = "Academic Tutoring & Recovery Review";
             desc = act.replace("Academic:", "").trim();
         } else if (act.startsWith("Financial:")) {
-            icon = "💳";
+            domainCode = "FIN";
             title = "Emergency Financial Aid & Payment Relief";
             desc = act.replace("Financial:", "").trim();
         } else if (act.startsWith("Advising:")) {
-            icon = "🤝";
+            domainCode = "ENG";
             title = "Retention Counseling & Schedule Flexibility";
             desc = act.replace("Advising:", "").trim();
         }
 
         return `
             <div class="action-item-card">
-                <span class="action-item-icon">${icon}</span>
+                <span class="factor-specialty-badge" style="font-weight: 700; font-size: 0.72rem; padding: 2px 6px;">${domainCode}</span>
                 <div>
                     <div class="action-item-title">${title}</div>
                     <div class="action-item-desc">${desc}</div>
@@ -1544,7 +1687,7 @@ async function loadCounselorsData() {
         console.error("[EduGuard] Failed to fetch counselors roster:", err);
         container.innerHTML = `
             <div class="card" style="grid-column: 1 / -1; padding: 2rem; text-align: center; color: var(--color-high);">
-                ⚠️ Failed to load counselors roster: ${err.message}. Please check that the server is online.
+                Failed to load counselors roster: ${err.message}. Please check that the server is online.
             </div>
         `;
         showToast("Error loading counselors roster.", "error");
@@ -1572,7 +1715,7 @@ function renderCounselorsGrid(counselors) {
     if (filtered.length === 0) {
         container.innerHTML = `
             <div class="card" style="grid-column: 1 / -1; padding: 2.5rem; text-align: center; color: var(--text-muted);">
-                🔍 No advisors found under the "${filter}" specialty domain.
+                No advisors found under the "${filter}" specialty domain.
             </div>
         `;
         return;
@@ -1582,19 +1725,17 @@ function renderCounselorsGrid(counselors) {
         const spec = (c.specialty || "Academic").toLowerCase();
         let specBadgeClass = "specialty-academic";
         let accentColor = "#0284c7";
-        let defaultEmoji = "📚";
 
         if (spec === "financial") {
             specBadgeClass = "specialty-financial";
             accentColor = "#d97706";
-            defaultEmoji = "💳";
         } else if (spec === "engagement") {
             specBadgeClass = "specialty-engagement";
             accentColor = "#9333ea";
-            defaultEmoji = "🤝";
         }
 
-        const avatar = c.avatar || defaultEmoji;
+        const initials = (c.name || "Advisor").split(" ").map(w => w[0]).filter(Boolean).slice(0, 2).join("");
+        const avatar = `<span style="font-size: 0.95rem; font-weight: 700; color: var(--color-teal);">${initials}</span>`;
         const util = Math.min(100, Math.max(0, c.utilization_pct || 0));
 
         // Color-coded progress bar threshold
@@ -1621,7 +1762,7 @@ function renderCounselorsGrid(counselors) {
                     </div>
 
                     <div class="counselor-contact">
-                        <span>✉️</span>
+                        <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted);">EMAIL:</span>
                         <span>${c.email}</span>
                     </div>
 
@@ -1643,7 +1784,7 @@ function renderCounselorsGrid(counselors) {
 
                 <div class="counselor-card-actions">
                     <button class="btn btn-sm btn-outline" style="width: 100%; background: var(--bg-surface); color: var(--color-teal); border: 1px solid var(--border-card);" onclick="viewCounselorCaseload('${escapeSingleQuotes(c.name)}')">
-                        👥 View Caseload (${c.current_load}) →
+                        View Caseload (${c.current_load})
                     </button>
                 </div>
             </div>
@@ -1777,7 +1918,7 @@ function renderAssignmentsSummaryTable(counselors) {
             <tr>
                 <td>
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        <span style="font-size: 1.2rem;">${c.avatar || "👤"}</span>
+                        <span class="factor-specialty-badge ${specBadgeClass}" style="font-size: 0.72rem; font-weight: 700;">${c.specialty.slice(0, 4).toUpperCase()}</span>
                         <div>
                             <b>${c.name}</b>
                             <div style="font-size: 0.75rem; color: var(--text-muted);">${c.title}</div>
@@ -1803,7 +1944,7 @@ function renderAssignmentsSummaryTable(counselors) {
                 </td>
                 <td style="text-align: right;">
                     <button class="btn btn-sm btn-outline" style="background: var(--bg-surface); color: var(--color-teal); border: 1px solid var(--border-card);" onclick="viewCounselorCaseload('${escapeSingleQuotes(c.name)}')">
-                        View Caseload →
+                        View Caseload
                     </button>
                 </td>
             </tr>
@@ -1844,10 +1985,10 @@ function renderAssignmentsQueueTable(students) {
                         ${s.assigned_counselor || "Unassigned"}
                     </span>
                 </td>
-                <td><span class="badge ${statusBadgeClass}">● ${s.status || "Flagged"}</span></td>
+                <td><span class="badge ${statusBadgeClass}">${s.status || "Flagged"}</span></td>
                 <td style="text-align: right;">
                     <button class="btn btn-sm btn-view" onclick="viewStudentProfile(${s.student_id})">
-                        Profile →
+                        View Profile
                     </button>
                 </td>
             </tr>
@@ -1860,11 +2001,11 @@ function renderAssignmentsQueueTable(students) {
  */
 async function executeAutoAssignment() {
     const btn = document.getElementById("btn-run-auto-assign");
-    const originalText = btn ? btn.innerHTML : "⚡ Run Auto-Assignment";
+    const originalText = btn ? btn.innerHTML : "Run Auto-Assignment";
 
     if (btn) {
         btn.disabled = true;
-        btn.innerHTML = "⏳ Processing 1,937 Students...";
+        btn.innerHTML = "Processing 1,937 Students...";
     }
 
     try {
@@ -1979,7 +2120,6 @@ function renderAcceptanceScorecard(scorecard) {
     tbody.innerHTML = scorecard.map(item => {
         const isPass = item.passed;
         const badgeClass = isPass ? "badge-low" : "badge-med";
-        const icon = isPass ? "✅" : "⚠️";
 
         return `
             <tr>
@@ -1988,8 +2128,8 @@ function renderAcceptanceScorecard(scorecard) {
                 <td><b style="color: var(--color-teal);">${item.achieved_random_forest}</b></td>
                 <td><span>${item.achieved_logistic_regression}</span></td>
                 <td>
-                    <span class="badge ${badgeClass}">
-                        ${icon} ${item.status_badge}
+                    <span class="badge ${badgeClass}" style="font-weight: 700;">
+                        ${item.status_badge}
                     </span>
                 </td>
                 <td style="font-size: 0.82rem; color: var(--text-secondary); max-width: 280px; line-height: 1.4;">
@@ -2016,10 +2156,10 @@ function renderCrossValidationTable(results) {
                 <td>
                     <b>${row.Model}</b>
                 </td>
-                <td>${(row.Precision_Mean * 100).toFixed(2)}% ± ${(row.Precision_Std * 100).toFixed(2)}%</td>
-                <td>${(row.Recall_Mean * 100).toFixed(2)}% ± ${(row.Recall_Std * 100).toFixed(2)}%</td>
-                <td>${(row.F1_Mean * 100).toFixed(2)}% ± ${(row.F1_Std * 100).toFixed(2)}%</td>
-                <td><b style="color: var(--color-teal);">${(row.ROC_AUC_Mean * 100).toFixed(2)}% ± ${(row.ROC_AUC_Std * 100).toFixed(2)}%</b></td>
+                <td>${(row.Precision_Mean * 100).toFixed(2)}% +/- ${(row.Precision_Std * 100).toFixed(2)}%</td>
+                <td>${(row.Recall_Mean * 100).toFixed(2)}% +/- ${(row.Recall_Std * 100).toFixed(2)}%</td>
+                <td>${(row.F1_Mean * 100).toFixed(2)}% +/- ${(row.F1_Std * 100).toFixed(2)}%</td>
+                <td><b style="color: var(--color-teal);">${(row.ROC_AUC_Mean * 100).toFixed(2)}% +/- ${(row.ROC_AUC_Std * 100).toFixed(2)}%</b></td>
                 <td>${statusBadge}</td>
             </tr>
         `;
@@ -2061,7 +2201,7 @@ function renderLimitationsList(limitations) {
     const container = document.getElementById("reports-limitations-list");
     if (!container || !limitations) return;
 
-    const icons = ["🏛️", "🧑‍💼", "📊"];
+    const icons = ["01", "02", "03"];
     const titles = [
         "Portuguese Higher Education Context",
         "Simulated Counselor Roster & Capacities",
@@ -2069,13 +2209,13 @@ function renderLimitationsList(limitations) {
     ];
 
     container.innerHTML = limitations.map((lim, idx) => {
-        const icon = icons[idx] || "⚠️";
+        const icon = icons[idx] || `${idx + 1}`;
         const title = titles[idx] || `Limitation ${idx + 1}`;
         const cleanDesc = lim.includes(":") ? lim.split(":").slice(1).join(":").trim() : lim;
 
         return `
             <div class="limitation-card">
-                <span class="limitation-icon">${icon}</span>
+                <span class="limitation-icon" style="font-weight: 700; color: var(--color-teal); font-size: 1rem;">${icon}</span>
                 <div>
                     <div class="limitation-title">${title}</div>
                     <div class="limitation-desc">${cleanDesc}</div>
@@ -2126,8 +2266,8 @@ function initVivaAccordion() {
                 item.classList.toggle("active", allExpanded);
             });
             toggleAllBtn.innerHTML = allExpanded 
-                ? "<span>📕 Collapse All Viva Q&A</span>"
-                : "<span>📖 Expand All Viva Q&A</span>";
+                ? "<span>Collapse All Viva Q&A</span>"
+                : "<span>Expand All Viva Q&A</span>";
         });
     }
 }
@@ -2151,17 +2291,17 @@ function renderPlaceholderPage(pageName) {
     container.style.display = "block";
     container.innerHTML = `
         <div class="page-header">
-            <h1 class="page-title">📌 ${pageName}</h1>
+            <h1 class="page-title">Module: ${pageName}</h1>
             <p class="page-subtitle">Module view</p>
         </div>
 
         <div class="placeholder-view">
-            <div class="placeholder-icon">📌</div>
+            <div class="placeholder-icon">[i]</div>
             <h2 class="placeholder-title">${pageName}</h2>
             <p class="placeholder-desc">EduGuard modules are fully active.</p>
             <div style="display: flex; gap: 10px;">
                 <button class="btn btn-sm btn-primary" onclick="navigateTo('dashboard')">
-                    ← Back to Dashboard
+                    Back to Dashboard
                 </button>
             </div>
         </div>
@@ -2182,15 +2322,15 @@ function showToast(message, type = "info") {
     const toast = document.createElement("div");
     toast.className = `toast toast-${type}`;
     
-    const icons = {
-        success: "✅",
-        error: "⚠️",
-        warning: "🔔",
-        info: "ℹ️"
+    const badges = {
+        success: "SUCCESS",
+        error: "ERROR",
+        warning: "ALERT",
+        info: "NOTICE"
     };
 
     toast.innerHTML = `
-        <span style="font-size: 1.1rem;">${icons[type] || "ℹ️"}</span>
+        <span class="badge badge-${type === 'error' ? 'high' : type === 'warning' ? 'med' : type === 'success' ? 'low' : 'flagged'}" style="font-size: 0.72rem; font-weight: 700; padding: 2px 6px;">${badges[type] || "INFO"}</span>
         <span style="flex: 1;">${message}</span>
     `;
 
