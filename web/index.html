@@ -1,0 +1,1772 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduGuard  -  Student Retention Portal</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="style.css?v=8.0">
+</head>
+<body>
+
+    <!-- =====================================================================
+         LANDING PAGE (shown before the user enters the app)
+         ===================================================================== -->
+    <div id="landing-page">
+
+        <!-- Landing Top Bar -->
+        <header class="lp-topbar">
+            <div class="lp-brand">
+                <div class="lp-brand-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                        <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                    </svg>
+                </div>
+                <div class="lp-brand-text">
+                    <span class="lp-brand-name">EduGuard</span>
+                    <span class="lp-brand-tagline">Academic Intelligence</span>
+                </div>
+            </div>
+            <button class="btn btn-primary lp-topbar-btn" id="btn-lp-topbar-dash">
+                <span>Open Dashboard</span>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </button>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="lp-hero">
+            <div class="lp-hero-wrap">
+
+                <!-- Left: Content -->
+                <div class="lp-hero-left">
+                    <div class="lp-pill">
+                        <span class="lp-pill-dot"></span>
+                        <span>ACADEMIC INTELLIGENCE PLATFORM</span>
+                    </div>
+
+                    <h1 class="lp-headline">
+                        Smarter Insights.<br>
+                        Better Academic <span class="lp-accent">Support.</span>
+                    </h1>
+
+                    <p class="lp-subtext">
+                        EduGuard helps counselors spot students who may be at risk of dropping out, understand why, and take action early - all from one simple dashboard.
+                    </p>
+
+                    <div class="lp-cta-group">
+                        <button class="btn btn-primary lp-btn-primary" id="btn-lp-dashboard">
+                            <span>Open Dashboard</span>
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </button>
+                        <button class="lp-btn-secondary" id="btn-lp-students">
+                            <span>View Students</span>
+                        </button>
+                    </div>
+
+                    <div class="lp-divider"></div>
+
+                    <div class="lp-stats-row" id="lp-stats-row">
+                        <div class="lp-stat">
+                            <span class="lp-stat-num" id="lstat-total">-</span>
+                            <span class="lp-stat-label">Students Tracked</span>
+                        </div>
+                        <div class="lp-stat-sep"></div>
+                        <div class="lp-stat">
+                            <span class="lp-stat-num" id="lstat-support">-</span>
+                            <span class="lp-stat-label">Need Support</span>
+                        </div>
+                        <div class="lp-stat-sep"></div>
+                        <div class="lp-stat">
+                            <span class="lp-stat-num" id="lstat-advisors">-</span>
+                            <span class="lp-stat-label">Specialist Advisors</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Staircase decoration -->
+                <div class="lp-staircase" aria-hidden="true">
+                    <div class="lp-slab lp-slab-1"></div>
+                    <div class="lp-slab lp-slab-2"></div>
+                    <div class="lp-slab lp-slab-3"></div>
+                    <div class="lp-slab lp-slab-4"></div>
+                    <div class="lp-slab lp-slab-5"></div>
+                    <div class="lp-slab lp-slab-6"></div>
+                    <div class="lp-slab lp-slab-7"></div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Platform Capabilities -->
+        <section class="lp-capabilities">
+            <div class="lp-cap-wrap">
+                <div class="lp-cap-heading">
+                    <div class="lp-cap-eyebrow">What EduGuard Does</div>
+                    <h2 class="lp-cap-title">Platform Capabilities</h2>
+                    <p class="lp-cap-subtitle">Everything you need to support student success.</p>
+                </div>
+                <div class="lp-cap-grid">
+
+                    <div class="lp-cap-card">
+                        <div class="lp-cap-icon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="20" x2="18" y2="10"></line>
+                                <line x1="12" y1="20" x2="12" y2="4"></line>
+                                <line x1="6" y1="20" x2="6" y2="14"></line>
+                            </svg>
+                        </div>
+                        <div class="lp-cap-name">Risk Prediction</div>
+                        <div class="lp-cap-desc">Shows which students may need help, ranked by who to contact first.</div>
+                    </div>
+
+                    <div class="lp-cap-card">
+                        <div class="lp-cap-icon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </div>
+                        <div class="lp-cap-name">Clear Reasons</div>
+                        <div class="lp-cap-desc">Explains in plain words why a student is flagged, with no technical jargon.</div>
+                    </div>
+
+                    <div class="lp-cap-card">
+                        <div class="lp-cap-icon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                        </div>
+                        <div class="lp-cap-name">Counselor Matching</div>
+                        <div class="lp-cap-desc">Assigns flagged students to a suitable counselor based on their needs and advisor availability.</div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- =====================================================================
+         2. SINGLE-PAGE APP SHELL
+         ===================================================================== -->
+    <div class="app-shell" id="app-root" style="display: none;">
+        
+        <!-- Sticky Top Navbar -->
+        <header class="navbar">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <button class="sidebar-toggle-btn" id="btn-toggle-sidebar" title="Toggle Sidebar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </button>
+                <div class="navbar-brand" id="nav-brand">
+                    <div class="brand-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                    </div>
+                    <div class="brand-text">
+                        <h2>EduGuard</h2>
+                        <span>Student Retention Portal</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navbar-actions">
+                <div class="date-pill" id="current-date-pill">
+                    Nov 2, 2026
+                </div>
+                <button class="theme-toggle-btn" id="btn-theme-toggle" title="Toggle Dark/Light Mode">
+                    <svg class="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Body: Sidebar + Dynamic Content -->
+        <div class="app-container">
+            
+            <!-- Collapsible Sidebar -->
+            <aside class="sidebar" id="app-sidebar">
+                <div>
+                    <ul class="nav-list">
+                        <li>
+                            <a class="nav-item active" data-page="dashboard">
+                                <span class="nav-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+                                </span>
+                                <span class="nav-text">Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-item" data-page="students">
+                                <span class="nav-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                                </span>
+                                <span class="nav-text">Students</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-item" data-page="profile">
+                                <span class="nav-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                </span>
+                                <span class="nav-text">Student Profile</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-item" data-page="counselors">
+                                <span class="nav-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                                </span>
+                                <span class="nav-text">Counselors</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-item" data-page="assignments">
+                                <span class="nav-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                                </span>
+                                <span class="nav-text">Assignments</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-item" data-page="reports">
+                                <span class="nav-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                                </span>
+                                <span class="nav-text">Reports</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-item" data-page="about">
+                                <span class="nav-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                                </span>
+                                <span class="nav-text">About</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-footer">
+                    <div><b>EduGuard</b> v2.0</div>
+                    <div>University AI Project</div>
+                </div>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="main-content" id="main-content-area">
+                
+                <!-- Error State Banner (Hidden by default) -->
+                <div class="error-banner" id="api-error-banner" style="display: none;">
+                    <div style="font-size: 1.25rem; font-weight: 800; color: #dc2626; border: 2px solid #dc2626; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; line-height: 1;">!</div>
+                    <div>
+                        <div class="error-title">Backend Connection Issue</div>
+                        <div class="error-desc" id="api-error-message">
+                            Unable to connect to the EduGuard FastAPI backend at <code>http://127.0.0.1:8000</code>. Please ensure the server is running.
+                        </div>
+                        <button class="btn btn-sm btn-primary" id="btn-retry-api" style="margin-top: 10px;">
+                            Retry Connection
+                        </button>
+                    </div>
+                </div>
+
+                <!-- =========================================================
+                     PAGE: DASHBOARD
+                     ========================================================= -->
+                <div class="page-view" id="page-dashboard">
+                    <div class="page-header">
+                        <h1 class="page-title">Student Advising &amp; Support Dashboard</h1>
+                        <p class="page-subtitle">A clear overview of university student retention, early warning alerts, and priority counseling check-ins.</p>
+                    </div>
+
+                    <!-- Non-Technical Guide: How EduGuard Helps Students -->
+                    <div class="how-it-works-grid" id="how-it-works">
+                        <div class="how-step-card">
+                            <div class="how-step-badge">1</div>
+                            <div>
+                                <div class="how-step-title">Early Detection</div>
+                                <div class="how-step-desc">
+                                    Monitors course completion, grades, and tuition status to spot students facing challenges before dropouts occur.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="how-step-card">
+                            <div class="how-step-badge">2</div>
+                            <div>
+                                <div class="how-step-title">Clear Explanations</div>
+                                <div class="how-step-desc">
+                                    Explains exactly why a student is struggling (difficult coursework, unpaid fees, or attendance) in plain words.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="how-step-card">
+                            <div class="how-step-badge">3</div>
+                            <div>
+                                <div class="how-step-title">1-on-1 Guidance</div>
+                                <div class="how-step-desc">
+                                    Connects students with dedicated academic and financial advisors who can provide personalized tutoring and aid.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- KPI Cards Grid (Humanized Metrics) -->
+                    <div class="kpi-grid">
+                        <div class="kpi-card" id="kpi-total-card">
+                            <div class="kpi-card-accent" style="background: var(--color-navy);"></div>
+                            <div class="kpi-label">Students Monitored</div>
+                            <div class="kpi-value" id="kpi-total-students">4,424</div>
+                            <div class="kpi-caption">Active university students enrolled this term</div>
+                        </div>
+                        <div class="kpi-card" id="kpi-high-card">
+                            <div class="kpi-card-accent" style="background: var(--color-high);"></div>
+                            <div class="kpi-label">Students Needing Support</div>
+                            <div class="kpi-value" id="kpi-high-risk" style="color: var(--color-high);">1,145</div>
+                            <div class="kpi-caption">Recommended for proactive counselor check-in</div>
+                        </div>
+                        <div class="kpi-card" id="kpi-unassigned-card">
+                            <div class="kpi-card-accent" style="background: #9333ea;"></div>
+                            <div class="kpi-label">Awaiting Advisor Meeting</div>
+                            <div class="kpi-value" id="kpi-unassigned">1,937</div>
+                            <div class="kpi-caption">High &amp; moderate priority students ready for outreach</div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Grid -->
+                    <div class="charts-grid">
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">
+                                        <span>Overall Student Retention Health</span>
+                                    </div>
+                                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">
+                                        Green = On Track (68%), Amber = Monitoring (18%), Red = Urgent Outreach (26%).
+                                    </p>
+                                </div>
+                                <span class="card-badge">Cohort Overview</span>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="chart-risk-distribution"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">
+                                        <span>Majors Needing Extra Academic Support</span>
+                                    </div>
+                                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">
+                                        Highlights degree programs where extra tutoring and teaching assistants are needed most.
+                                    </p>
+                                </div>
+                                <span class="card-badge">Academic Programs</span>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="chart-risk-course"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Top 10 Priority Table -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-title">
+                                    <span>Students Who Need Support First (Top 10 Priority Cases)</span>
+                                </div>
+                                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">
+                                    Students facing pressing academic or financial hurdles prioritized for immediate counselor check-ins.
+                                </p>
+                            </div>
+                            <span class="card-badge">Priority Queue</span>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table" id="table-top-priority">
+                                <thead>
+                                    <tr>
+                                        <th>Priority</th>
+                                        <th>Student</th>
+                                        <th>Support Need</th>
+                                        <th>Assigned Advisor</th>
+                                        <th style="text-align: right;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-priority-body">
+                                    <!-- Dynamic Rows rendered via script.js -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- =========================================================
+                     PAGE: STUDENTS DIRECTORY
+                     ========================================================= -->
+                <div class="page-view" id="page-students" style="display: none;">
+                    <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h1 class="page-title">Students Directory</h1>
+                            <p class="page-subtitle">Search, filter, inspect risk attributions, and manage advisor assignments across 4,424 student records.</p>
+                        </div>
+                        <div>
+                            <button class="btn btn-outline" id="btn-export-students" style="background: var(--bg-surface); color: var(--color-teal); border: 1px solid var(--border-card);">
+                                Export Filtered CSV
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filter Control Card -->
+                    <div class="card" style="margin-bottom: 1.5rem;">
+                        <div class="filter-grid">
+                            <div class="filter-item">
+                                <label class="filter-label">Search Student ID</label>
+                                <div class="search-input-wrapper">
+                                    <span class="search-icon">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                    </span>
+                                    <input type="text" id="filter-search" class="form-input" placeholder="Enter ID (e.g. 2237)...">
+                                </div>
+                            </div>
+                            <div class="filter-item">
+                                <label class="filter-label">Risk Level</label>
+                                <select id="filter-risk" class="form-select">
+                                    <option value="all">All Tiers (4,424)</option>
+                                    <option value="high">High Risk (0.60 and above)</option>
+                                    <option value="medium">Medium Risk (0.30 - 0.59)</option>
+                                    <option value="low">Low Risk (&lt; 0.30)</option>
+                                </select>
+                            </div>
+                            <div class="filter-item">
+                                <label class="filter-label">Assigned Advisor</label>
+                                <select id="filter-counselor" class="form-select">
+                                    <option value="all">All Advisors</option>
+                                    <option value="unassigned">Unassigned Only</option>
+                                    <option value="Dr. Elena Rostova">Dr. Elena Rostova</option>
+                                    <option value="Prof. Marcus Vance">Prof. Marcus Vance</option>
+                                    <option value="Sarah Jenkins">Sarah Jenkins</option>
+                                    <option value="David Kim">David Kim</option>
+                                    <option value="Maria Santos">Maria Santos</option>
+                                    <option value="Dr. Alex Taylor">Dr. Alex Taylor</option>
+                                </select>
+                            </div>
+                            <div class="filter-item">
+                                <label class="filter-label">Case Status</label>
+                                <select id="filter-status" class="form-select">
+                                    <option value="all">All Statuses</option>
+                                    <option value="flagged">Flagged</option>
+                                    <option value="contacted">Contacted</option>
+                                    <option value="resolved">Resolved</option>
+                                </select>
+                            </div>
+                            <div class="filter-item">
+                                <label class="filter-label">Sort By</label>
+                                <div style="display: flex; gap: 6px;">
+                                    <select id="filter-sort-by" class="form-select" style="flex: 2;">
+                                        <option value="priority">Referral Priority</option>
+                                        <option value="risk">Risk Score</option>
+                                        <option value="urgency">Urgency Score</option>
+                                        <option value="id">Student ID</option>
+                                    </select>
+                                    <select id="filter-sort-order" class="form-select" style="flex: 1;">
+                                        <option value="desc">Desc</option>
+                                        <option value="asc">Asc</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Active Count & Pagination Header -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; font-size: 0.88rem; color: var(--text-secondary); flex-wrap: wrap; gap: 10px;">
+                        <span id="students-counter">Showing 0 of 0 students</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span>Rows per page:</span>
+                            <select id="students-page-size" class="form-select" style="width: auto; padding: 4px 8px; font-size: 0.85rem;">
+                                <option value="15">15</option>
+                                <option value="25" selected>25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Students Directory Table Card -->
+                    <div class="card" style="padding: 0; overflow: hidden; margin-bottom: 1.5rem;">
+                        <div class="table-container">
+                            <table class="data-table" id="table-students">
+                                <thead>
+                                    <tr>
+                                        <th>Student ID</th>
+                                        <th>Risk Level</th>
+                                        <th>Assigned Advisor</th>
+                                        <th>Case Status</th>
+                                        <th style="text-align: right; padding-right: 1.5rem;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="students-table-body">
+                                    <!-- Dynamic Rows populated via script.js -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Pagination Bar -->
+                    <div class="pagination-bar">
+                        <button class="btn btn-sm btn-pagination" id="btn-page-prev" disabled>
+                            Previous
+                        </button>
+                        <span class="page-indicator" id="page-indicator">Page 1 of 1</span>
+                        <button class="btn btn-sm btn-pagination" id="btn-page-next" disabled>
+                            Next
+                        </button>
+                    </div>
+                </div>
+
+                <!-- =========================================================
+                     PAGE: STUDENT PROFILE
+                     ========================================================= -->
+                <div class="page-view" id="page-profile" style="display: none;">
+                    <!-- Profile Header & Navigation Toolbar -->
+                    <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+                                <button class="btn btn-sm btn-outline" id="btn-profile-back" style="background: var(--bg-surface); color: var(--text-secondary); border: 1px solid var(--border-card);">
+                                    Back to Directory
+                                </button>
+                                <span style="font-size: 0.85rem; color: var(--text-muted);">Student Support Case</span>
+                            </div>
+                            <h1 class="page-title" id="profile-page-title">Student Profile</h1>
+                            <p class="page-subtitle">Personalized student support dossier: explains why this student needs guidance, identifies key challenges, and provides an actionable counselor briefing.</p>
+                        </div>
+                        
+                        <!-- Student Quick Switcher -->
+                        <div class="profile-switcher-card">
+                            <span style="font-size: 0.82rem; font-weight: 600; color: var(--text-secondary);">Select Student:</span>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <button class="btn btn-sm btn-outline profile-nav-btn" id="btn-prev-student" title="Previous Student">Prev</button>
+                                <input type="number" id="profile-student-input" class="form-input" min="0" max="4423" value="2237" style="width: 100px; text-align: center; font-weight: 700; padding: 5px 8px;" placeholder="ID">
+                                <button class="btn btn-sm btn-primary profile-nav-btn" id="btn-go-student">Go</button>
+                                <button class="btn btn-sm btn-outline profile-nav-btn" id="btn-next-student" title="Next Student">Next</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Student Header KPI Summary Card -->
+                    <div class="card profile-header-card" id="profile-summary-card">
+                        <div class="profile-header-top">
+                            <div class="profile-identity">
+                                <div class="profile-avatar" id="profile-avatar">#2237</div>
+                                <div>
+                                    <h2 class="profile-name" id="profile-student-id-display">Student #2237</h2>
+                                    <div class="profile-meta-row" id="profile-meta-row">
+                                        <span class="badge badge-high" id="profile-risk-badge">98.5% High Risk</span>
+                                        <span class="badge badge-flagged" id="profile-status-badge">Flagged</span>
+                                        <span class="profile-outcome-pill" id="profile-outcome-pill">Benchmark: Dropout</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Profile Action Toolbar -->
+                            <div class="profile-action-toolbar">
+                                <button class="btn btn-sm btn-primary" id="btn-profile-auto-assign" title="Auto-assign to specialized counselor based on top risk factor">
+                                    Auto-Assign
+                                </button>
+                                <button class="btn btn-sm btn-outline" id="btn-profile-reassign" style="background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border-card);">
+                                    Reassign Advisor
+                                </button>
+                                <button class="btn btn-sm btn-outline" id="btn-profile-mark-contacted" style="background: var(--color-contacted-bg); color: var(--color-contacted-text); border: 1px solid var(--border-subtle);">
+                                    Mark Contacted
+                                </button>
+                                <button class="btn btn-sm btn-outline" id="btn-profile-mark-resolved" style="background: var(--color-resolved-bg); color: var(--color-resolved-text); border: 1px solid var(--border-subtle);">
+                                    Mark Resolved
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Header Stats Row -->
+                        <div class="profile-kpi-grid">
+                            <div class="profile-kpi-item">
+                                <span class="profile-kpi-label">Support Need Level</span>
+                                <span class="profile-kpi-value" id="profile-kpi-risk">98.5%</span>
+                                <span class="profile-kpi-sub" id="profile-kpi-tier">High Risk Tier</span>
+                            </div>
+                            <div class="profile-kpi-item">
+                                <span class="profile-kpi-label">Administrative Urgency</span>
+                                <span class="profile-kpi-value" id="profile-kpi-urgency">1.00</span>
+                                <span class="profile-kpi-sub">Tuition / Debt / Zero Credits</span>
+                            </div>
+                            <div class="profile-kpi-item">
+                                <span class="profile-kpi-label">Outreach Priority</span>
+                                <span class="profile-kpi-value" id="profile-kpi-priority" style="color: var(--color-teal);">1.4775</span>
+                                <span class="profile-kpi-sub">Priority based on risk and urgency</span>
+                            </div>
+                            <div class="profile-kpi-item">
+                                <span class="profile-kpi-label">Assigned Advisor</span>
+                                <span class="profile-kpi-value" id="profile-kpi-advisor" style="font-size: 1.15rem; font-weight: 700;">Unassigned</span>
+                                <span class="profile-kpi-sub" id="profile-kpi-advisor-sub">Awaiting outreach</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Profile Two-Column Layout -->
+                    <div class="profile-body-grid">
+                        
+                        <!-- Left Column: Local SHAP Chart & Top Risk Drivers -->
+                        <div class="profile-left-col">
+                            <!-- SHAP Chart Card -->
+                            <div class="card" style="margin-bottom: 1.5rem;">
+                                <div class="card-header">
+                                    <div>
+                                        <div class="card-title">
+                                            <span>Key Factors Affecting This Student</span>
+                                        </div>
+                                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 3px;">
+                                            Red bars highlight areas causing student difficulty; teal bars represent student strengths and course completion buffers.
+                                        </p>
+                                    </div>
+                                    <span class="card-badge">Key Factors</span>
+                                </div>
+                                <div class="chart-wrapper" style="height: 380px;">
+                                    <canvas id="chart-profile-shap"></canvas>
+                                </div>
+                            </div>
+
+                            <!-- Top 3 Risk Drivers Detail Card -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <div>
+                                        <div class="card-title">
+                                            <span>Top 3 Specific Student Challenges</span>
+                                        </div>
+                                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 3px;">
+                                            Institutional records showing where the student is experiencing academic or financial friction.
+                                        </p>
+                                    </div>
+                                    <span class="card-badge">Focus Areas</span>
+                                </div>
+                                <div id="profile-top-factors-list" class="top-factors-container">
+                                    <!-- Dynamic Cards populated via script.js -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Counselor Briefing & Intervention Actions -->
+                        <div class="profile-right-col">
+                            <!-- Official Briefing Card -->
+                            <div class="card" style="margin-bottom: 1.5rem;">
+                                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <div class="card-title">
+                                            <span>Official Counselor Briefing &amp; Background</span>
+                                        </div>
+                                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 3px;">
+                                            Plain-English summary of student background, key hurdles, and recommended conversation starters.
+                                        </p>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline" id="btn-download-briefing" style="background: var(--bg-surface); color: var(--color-teal); border: 1px solid var(--border-card);">
+                                        Download .txt
+                                    </button>
+                                </div>
+                                
+                                <!-- Warning banner if NoRiskFactorsError triggered -->
+                                <div id="profile-briefing-warning" class="alert-box alert-warning" style="display: none;"></div>
+                                
+                                <!-- Briefing Text Box -->
+                                <div class="briefing-terminal-box" id="profile-briefing-box">
+                                    <pre id="profile-briefing-text">Loading student briefing...</pre>
+                                </div>
+                            </div>
+
+                            <!-- Recommended Intervention Actions Card -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <div>
+                                        <div class="card-title">
+                                            <span>Recommended Support Actions for Advisors</span>
+                                        </div>
+                                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 3px;">
+                                            Step-by-step guidance for the counselor to discuss during 1-on-1 student meetings.
+                                        </p>
+                                    </div>
+                                    <span class="card-badge">Advisor Action Plan</span>
+                                </div>
+                                <div id="profile-actions-list" class="recommended-actions-container">
+                                    <!-- Dynamic Action Items populated via script.js -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- =========================================================
+                     PAGE: COUNSELORS ROSTER
+                     ========================================================= -->
+                <div class="page-view" id="page-counselors" style="display: none;">
+                    <!-- Page Header with Simulated Badge -->
+                    <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <span class="badge badge-med">Sample roster (simulated)</span>
+                                <span style="font-size: 0.85rem; color: var(--text-muted);">Capacity-Constrained Triage</span>
+                            </div>
+                            <h1 class="page-title">Advising Team &amp; Caseloads</h1>
+                            <p class="page-subtitle">Simulated roster of 6 specialized advisors managing academic, financial, and engagement interventions across 1,700 seats.</p>
+                        </div>
+                        <div>
+                            <button class="btn btn-primary" onclick="navigateTo('assignments')">
+                                Open Auto-Assignment Engine
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Institutional Caseload Overview KPI Grid -->
+                    <div class="kpi-grid" style="margin-bottom: 2rem;">
+                        <div class="kpi-card">
+                            <div class="kpi-card-accent" style="background: var(--color-navy);"></div>
+                            <div class="kpi-label">Active Advisors</div>
+                            <div class="kpi-value" id="counselors-total-count">6</div>
+                            <div class="kpi-caption">3 Domain Specialties</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-card-accent" style="background: var(--color-teal);"></div>
+                            <div class="kpi-label">Total Capacity</div>
+                            <div class="kpi-value" id="counselors-total-capacity">1,700</div>
+                            <div class="kpi-caption">Combined Advisor Slots</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-card-accent" style="background: #9333ea;"></div>
+                            <div class="kpi-label">Assigned Students</div>
+                            <div class="kpi-value" id="counselors-total-assigned">0</div>
+                            <div class="kpi-caption">Currently in Caseloads</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-card-accent" style="background: var(--color-low);"></div>
+                            <div class="kpi-label">Available Slots</div>
+                            <div class="kpi-value" id="counselors-total-available" style="color: var(--color-low);">1,700</div>
+                            <div class="kpi-caption">Free Capacity Remaining</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-card-accent" style="background: var(--color-high);"></div>
+                            <div class="kpi-label">Caseload Utilization</div>
+                            <div class="kpi-value" id="counselors-total-utilization">0.0%</div>
+                            <div class="kpi-caption">Cohort-wide Load</div>
+                        </div>
+                    </div>
+
+                    <!-- Specialty Filter Tabs -->
+                    <div class="counselor-filter-bar">
+                        <div class="counselor-tabs" id="counselor-tabs">
+                            <button class="counselor-tab-btn active" data-specialty="all">
+                                All Specialties (6)
+                            </button>
+                            <button class="counselor-tab-btn" data-specialty="academic">
+                                Academic (2)
+                            </button>
+                            <button class="counselor-tab-btn" data-specialty="financial">
+                                Financial (2)
+                            </button>
+                            <button class="counselor-tab-btn" data-specialty="engagement">
+                                Engagement (2)
+                            </button>
+                        </div>
+                        <span id="counselors-view-count" style="font-size: 0.88rem; color: var(--text-muted);">
+                            Showing 6 advisors
+                        </span>
+                    </div>
+
+                    <!-- 3x2 Counselors Cards Grid -->
+                    <div class="counselor-grid" id="counselors-cards-container">
+                        <!-- Populated dynamically via script.js -->
+                    </div>
+                </div>
+                <!-- =========================================================
+                     PAGE: ASSIGNMENTS ENGINE
+                     ========================================================= -->
+                <div class="page-view" id="page-assignments" style="display: none;">
+                    <!-- Page Header & Action Buttons -->
+                    <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <span class="badge badge-med">Algorithm Engine</span>
+                                <span style="font-size: 0.85rem; color: var(--text-muted);">Explainable XAI Triage</span>
+                            </div>
+                            <h1 class="page-title">Capacity-Constrained Auto-Assignment</h1>
+                            <p class="page-subtitle">Priority-ordered triage matching student SHAP risk factors to specialized advisor caseloads with a 1,700 seat cap.</p>
+                        </div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button class="btn btn-primary" id="btn-run-auto-assign" style="background: var(--color-teal); box-shadow: 0 4px 14px var(--color-teal-glow);">
+                                Run Auto-Assignment (High &amp; Med)
+                            </button>
+                            <button class="btn btn-outline" id="btn-reset-assignments" style="background: var(--bg-surface); color: var(--color-high); border: 1px solid var(--border-card);">
+                                Reset All Assignments
+                            </button>
+                            <button class="btn btn-outline" id="btn-export-assignments" style="background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border-card);">
+                                Export CSV
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Triage Summary KPI Grid -->
+                    <div class="kpi-grid" style="margin-bottom: 2rem;">
+                        <div class="kpi-card">
+                            <div class="kpi-card-accent" style="background: var(--color-navy);"></div>
+                            <div class="kpi-label">Eligible Students</div>
+                            <div class="kpi-value" id="kpi-assign-eligible">1,937</div>
+                            <div class="kpi-caption">High (1,145) + Medium (792)</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-card-accent" style="background: var(--color-teal);"></div>
+                            <div class="kpi-label">Specialist Capacity</div>
+                            <div class="kpi-value" id="kpi-assign-capacity">1,700</div>
+                            <div class="kpi-caption">6 Advisors Maximum Load</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-card-accent" style="background: var(--color-low);"></div>
+                            <div class="kpi-label">Successfully Assigned</div>
+                            <div class="kpi-value" id="kpi-assign-assigned" style="color: var(--color-low);">0</div>
+                            <div class="kpi-caption" id="kpi-assign-assigned-sub">Awaiting run</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-card-accent" style="background: var(--color-high);"></div>
+                            <div class="kpi-label">Capacity Overflow</div>
+                            <div class="kpi-value" id="kpi-assign-overflow" style="color: var(--color-high);">0</div>
+                            <div class="kpi-caption">Unassigned (Capacity Full)</div>
+                        </div>
+                    </div>
+
+                    <!-- Viva Explanation Box: Matching Logic & Constraints -->
+                    <div class="card" style="margin-bottom: 2rem; border-left: 4px solid var(--color-teal);">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span>Algorithmic Triage &amp; Assignment Rules (Viva Defense Ready)</span>
+                            </div>
+                            <span class="card-badge">Greedy Constraint Logic</span>
+                        </div>
+                        <div style="font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary);">
+                            <div class="algorithm-steps-grid">
+                                <div class="algo-step-item">
+                                    <div class="algo-step-number">1</div>
+                                    <div>
+                                        <b style="color: var(--text-primary);">Priority Ordering</b>
+                                        <p style="margin-top: 3px; font-size: 0.83rem;">
+                                            Filter students with Risk Score or higher 0.30 (High and Medium tiers). Sort in descending order of Referral Priority:
+                                            <code style="display: block; margin-top: 4px; padding: 2px 6px; background: var(--bg-page); border-radius: 4px;">Priority = Risk * (1 + w * Urgency)</code>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="algo-step-item">
+                                    <div class="algo-step-number">2</div>
+                                    <div>
+                                        <b style="color: var(--text-primary);">SHAP Factor Mapping</b>
+                                        <p style="margin-top: 3px; font-size: 0.83rem;">
+                                            Identify each student's top positive SHAP risk driver. Map the feature name to a domain specialty:
+                                            <span style="display: block; margin-top: 4px; font-size: 0.8rem;">
+                                                <b>Academic:</b> Approved units, grades, evaluations<br>
+                                                <b>Financial:</b> Tuition fees, debtor status, scholarship<br>
+                                                <b>Engagement:</b> Age, attendance, marital status
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="algo-step-item">
+                                    <div class="algo-step-number">3</div>
+                                    <div>
+                                        <b style="color: var(--text-primary);">Specialist Load Balancing</b>
+                                        <p style="margin-top: 3px; font-size: 0.83rem;">
+                                            Assign the student to the counselor with the matching specialty who has free capacity (&lt; capacity) and the lowest current load.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="algo-step-item">
+                                    <div class="algo-step-number">4</div>
+                                    <div>
+                                        <b style="color: var(--text-primary);">Fallback &amp; Overflow Guardrail</b>
+                                        <p style="margin-top: 3px; font-size: 0.83rem;">
+                                            If matching specialists are full, assign any counselor with free capacity. Once all 1,700 seats are exhausted, designate as:
+                                            <span class="badge badge-high" style="margin-top: 4px; display: inline-block;">Unassigned - capacity full</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Caseload Distribution Table Card -->
+                    <div class="card" style="margin-bottom: 2rem;">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span>Advisor Utilization &amp; Load Summary</span>
+                            </div>
+                            <span class="card-badge">Live Caseloads</span>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table" id="table-assignments-summary">
+                                <thead>
+                                    <tr>
+                                        <th>Advisor Name</th>
+                                        <th>Domain Specialty</th>
+                                        <th>Assigned / Capacity</th>
+                                        <th style="min-width: 140px;">Caseload Bar</th>
+                                        <th>Remaining Slots</th>
+                                        <th>Utilization</th>
+                                        <th style="text-align: right;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-assignments-summary-body">
+                                    <!-- Populated dynamically via script.js -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Active Assignment Queue Preview Card -->
+                    <div class="card">
+                        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                            <div class="card-title">
+                                <span>High-Priority Triage Queue Preview (Top 10 Referrals)</span>
+                            </div>
+                            <button class="btn btn-sm btn-outline" onclick="navigateTo('students')" style="background: var(--bg-surface); color: var(--color-teal); border: 1px solid var(--border-card);">
+                                View All Students in Directory
+                            </button>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table" id="table-assignments-queue">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Student ID</th>
+                                        <th>Risk Score</th>
+                                        <th>Referral Priority</th>
+                                        <th>Assigned Advisor</th>
+                                        <th>Status</th>
+                                        <th style="text-align: right;">Profile Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-assignments-queue-body">
+                                    <!-- Populated dynamically via script.js -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- =========================================================
+                     PAGE: REPORTS & ACCEPTANCE SCORECARD
+                     ========================================================= -->
+                <div class="page-view" id="page-reports" style="display: none;">
+                    <!-- Page Header & Download Actions -->
+                    <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <span class="badge badge-low">Verified Performance</span>
+                                <span style="font-size: 0.85rem; color: var(--text-muted);">Stratified 5-Fold Cross-Validation</span>
+                            </div>
+                            <h1 class="page-title">Model Reports &amp; Acceptance Scorecard</h1>
+                            <p class="page-subtitle">Rigorous empirical cross-validation metrics, automated acceptance criteria verification, and global SHAP interpretability.</p>
+                        </div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <a href="results.csv" download="eduguard_cv_results.csv" class="btn btn-outline" style="background: var(--bg-surface); color: var(--color-teal); border: 1px solid var(--border-card);">
+                                Download results.csv
+                            </a>
+                            <a href="shap_summary.png" target="_blank" class="btn btn-outline" style="background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border-card);">
+                                View Global SHAP Image
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Sub-navigation Tabs for Decluttered Views -->
+                    <div class="subnav-tabs" id="reports-tabs">
+                        <button class="subnav-tab active" data-tab="reports-tab-benchmarks">Model Benchmarks</button>
+                        <button class="subnav-tab" data-tab="reports-tab-acceptance">Acceptance Scorecard</button>
+                        <button class="subnav-tab" data-tab="reports-tab-explainability">Explainability &amp; Limitations</button>
+                    </div>
+
+                    <!-- TAB 1: Model Benchmarks -->
+                    <div class="subnav-pane" id="reports-tab-benchmarks">
+                        <!-- Performance Highlights KPI Grid -->
+                        <div class="kpi-grid" style="margin-bottom: 2rem;">
+                            <div class="kpi-card">
+                                <div class="kpi-card-accent" style="background: var(--color-teal);"></div>
+                                <div class="kpi-label">ROC-AUC Score</div>
+                                <div class="kpi-value" style="color: var(--color-teal);">91.98%</div>
+                                <div class="kpi-caption">(+/- 1.00% across 5 folds) (Target 85% or higher)</div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-card-accent" style="background: var(--color-low);"></div>
+                                <div class="kpi-label">Precision (Dropout)</div>
+                                <div class="kpi-value" style="color: var(--color-low);">87.50%</div>
+                                <div class="kpi-caption">(+/- 2.67%) (Alert fatigue minimized)</div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-card-accent" style="background: var(--color-navy);"></div>
+                                <div class="kpi-label">Recall (Dropout)</div>
+                                <div class="kpi-value">71.36%</div>
+                                <div class="kpi-caption">(+/- 0.49%) (1,014 of 1,421 dropouts flagged)</div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-card-accent" style="background: #9333ea;"></div>
+                                <div class="kpi-label">F1-Score (Dropout)</div>
+                                <div class="kpi-value" style="color: #9333ea;">78.59%</div>
+                                <div class="kpi-caption">(+/- 1.08%) (Harmonic mean of P &amp; R)</div>
+                            </div>
+                        </div>
+
+                        <!-- Cross-Validation Benchmark Table (results.csv) -->
+                        <div class="card" style="margin-bottom: 2rem;">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">
+                                        <span>Stratified 5-Fold Cross-Validation Benchmark (results.csv)</span>
+                                    </div>
+                                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">
+                                        Head-to-head empirical metrics computed across 5 stratified folds (Mean and Standard Deviation).
+                                    </p>
+                                </div>
+                                <span class="card-badge">Empirical Results</span>
+                            </div>
+                            <div class="table-container">
+                                <table class="data-table" id="table-cv-results">
+                                    <thead>
+                                        <tr>
+                                            <th>Evaluated Model Architecture</th>
+                                            <th>Precision (Mean and Std)</th>
+                                            <th>Recall (Mean and Std)</th>
+                                            <th>F1-Score (Mean and Std)</th>
+                                            <th>ROC-AUC (Mean and Std)</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="table-cv-results-body">
+                                        <!-- Populated dynamically via script.js -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: Acceptance Scorecard -->
+                    <div class="subnav-pane" id="reports-tab-acceptance" style="display: none;">
+                        <div class="card" style="margin-bottom: 2rem;">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">
+                                        <span>Acceptance Criteria Verification (ACCEPTANCE.md)</span>
+                                    </div>
+                                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">
+                                        Automated pass/fail evaluation against target thresholds defined prior to model training.
+                                    </p>
+                                </div>
+                                <span class="card-badge">Audit Scorecard</span>
+                            </div>
+                            <div class="table-container">
+                                <table class="data-table" id="table-acceptance-scorecard">
+                                    <thead>
+                                        <tr>
+                                            <th>Performance Criterion</th>
+                                            <th>Target Threshold</th>
+                                            <th>Random Forest (Production)</th>
+                                            <th>Logistic Regression (Baseline)</th>
+                                            <th>Status Badge</th>
+                                            <th>Viva Oral Defense Justification</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="table-acceptance-scorecard-body">
+                                        <!-- Populated dynamically via script.js -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: Global Explainability & Limitations -->
+                    <div class="subnav-pane" id="reports-tab-explainability" style="display: none;">
+                        <!-- Global Feature Importance & SHAP Summary -->
+                        <div class="card" style="margin-bottom: 2rem;">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">
+                                        <span>Global Explainability &amp; Feature Importances</span>
+                                    </div>
+                                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">
+                                        Cohort-wide SHAP attribution analysis across all 4,424 students and 36 predictive features.
+                                    </p>
+                                </div>
+                                <span class="card-badge">TreeExplainer</span>
+                            </div>
+
+                            <div class="reports-shap-grid">
+                                <!-- Left: shap_summary.png image -->
+                                <div class="report-img-wrapper">
+                                    <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
+                                        Global SHAP Summary Plot (shap_summary.png)
+                                    </h4>
+                                    <div class="shap-img-container">
+                                        <img src="shap_summary.png" id="reports-shap-image" alt="Global SHAP Summary Plot" loading="lazy">
+                                    </div>
+                                    <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 8px; line-height: 1.4;">
+                                        Bar length indicates the mean absolute SHAP value: mean(|SHAP|). Academic progression features in the 2nd and 1st semesters dominate the model's predictive decisions.
+                                    </p>
+                                </div>
+
+                                <!-- Right: Top 10 Global Features Table -->
+                                <div>
+                                    <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
+                                        Top 10 Global Feature Rankings
+                                    </h4>
+                                    <div class="table-container" style="border: 1px solid var(--border-subtle); border-radius: var(--border-radius-sm);">
+                                        <table class="data-table" id="table-global-features">
+                                            <thead>
+                                                <tr>
+                                                    <th>Rank</th>
+                                                    <th>Feature Name</th>
+                                                    <th>Mean |SHAP|</th>
+                                                    <th>Domain</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="table-global-features-body">
+                                                <!-- Populated dynamically via script.js -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Methodological & Institutional Limitations Box -->
+                        <div class="card" style="border-left: 4px solid #f59e0b;">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <span>Methodological &amp; Practical Limitations (Viva Requirement)</span>
+                                </div>
+                                <span class="card-badge" style="background: rgba(245, 158, 11, 0.15); color: #d97706; border-color: rgba(245, 158, 11, 0.3);">
+                                    Critical Appraisal
+                                </span>
+                            </div>
+                            <div style="font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary);">
+                                <p style="margin-bottom: 1rem;">
+                                    An honest, transparent discussion of limitations is required for university oral defense and ethical machine learning deployment:
+                                </p>
+                                <div class="limitations-grid" id="reports-limitations-list">
+                                    <!-- Populated dynamically via script.js -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- =========================================================
+                     8. ABOUT & VIVA DEFENSE DOSSIER PAGE (Step 8)
+                     ========================================================= -->
+                <div class="page-view" id="page-about" style="display: none;">
+                    <!-- About Page Header -->
+                    <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h1 class="page-title">System Architecture & Viva Defense Dossier</h1>
+                            <p class="page-subtitle">
+                                End-to-End Machine Learning Pipeline, Game-Theoretic Explainability (SHAP), and Ethical Decision Support
+                            </p>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <a href="https://github.com/umairkhan1626/Student-Dropout-Prediction-System" target="_blank" rel="noopener" class="btn btn-sm btn-outline" style="border-color: var(--border-card); background: var(--bg-surface); text-decoration: none;">
+                                <span>GitHub Repository</span>
+                            </a>
+                            <button class="btn btn-sm btn-primary" id="btn-toggle-all-viva">
+                                <span>Expand All Viva Q&A</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Sub-navigation Tabs for Decluttered Views -->
+                    <div class="subnav-tabs" id="about-tabs">
+                        <button class="subnav-tab active" data-tab="about-tab-architecture">System &amp; Pipeline</button>
+                        <button class="subnav-tab" data-tab="about-tab-techstack">Technology Stack</button>
+                        <button class="subnav-tab" data-tab="about-tab-viva">Viva Defense Dossier</button>
+                    </div>
+
+                    <!-- TAB 1: System & Pipeline -->
+                    <div class="subnav-pane" id="about-tab-architecture">
+                        <!-- Mission & Ethical Mandate Card -->
+                    <div class="card" style="margin-bottom: 2rem; border-left: 4px solid var(--color-primary);">
+                        <div class="card-header" style="margin-bottom: 0.75rem;">
+                            <h2 class="card-title">Project Mission & Ethical Non-Punitive Mandate</h2>
+                            <span class="card-badge" style="background: rgba(37, 99, 235, 0.1); color: var(--color-primary); border-color: rgba(37, 99, 235, 0.2);">
+                                Core Philosophy
+                            </span>
+                        </div>
+                        <p style="font-size: 0.95rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 1.5rem;">
+                            <b>EduGuard</b> is an explainable machine learning decision-support platform designed to empower university academic advisors and counselors with proactive, transparent, and non-punitive early interventions. Rather than acting as an autonomous gatekeeper, EduGuard translates complex statistical attrition probabilities into actionable, human-interpretable risk drivers, enabling counselors to provide targeted academic, financial, and engagement support before students disengage.
+                        </p>
+
+                        <div class="limitations-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+                            <div class="limitation-card">
+                                <span class="limitation-icon" style="font-weight: 700; color: var(--color-teal); font-size: 1.1rem;">01</span>
+                                <div>
+                                    <div class="limitation-title">Non-Punitive Mandate</div>
+                                    <div class="limitation-desc">
+                                        Risk scores are strictly utilized to allocate proactive support, tutoring, and emergency aid - never to restrict enrollment, penalize students, or automate negative sanctions.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="limitation-card">
+                                <span class="limitation-icon" style="font-weight: 700; color: var(--color-teal); font-size: 1.1rem;">02</span>
+                                <div>
+                                    <div class="limitation-title">Local Interpretability</div>
+                                    <div class="limitation-desc">
+                                        Black-box predictions are prohibited. Every student profile is unpacked through exact Lundberg & Lee TreeSHAP Shapley values, highlighting specific positive drivers and protective buffers.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="limitation-card">
+                                <span class="limitation-icon" style="font-weight: 700; color: var(--color-teal); font-size: 1.1rem;">03</span>
+                                <div>
+                                    <div class="limitation-title">Human-in-the-Loop</div>
+                                    <div class="limitation-desc">
+                                        Algorithms only recommend; human advisors hold sole decision authority. Advisors review personalized counselor briefings, adjust outreach status, and tailor interventions.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="limitation-card">
+                                <span class="limitation-icon" style="font-weight: 700; color: var(--color-teal); font-size: 1.1rem;">04</span>
+                                <div>
+                                    <div class="limitation-title">Privacy & Governance</div>
+                                    <div class="limitation-desc">
+                                        Adheres to higher education privacy standards with full local model inference, zero external telemetry tracking, and transparent out-of-fold cross-validation auditing.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 7-Stage End-to-End Machine Learning Pipeline Grid -->
+                    <div class="card" style="margin-bottom: 2rem;">
+                        <div class="card-header">
+                            <div>
+                                <h2 class="card-title">7-Stage End-to-End Machine Learning Pipeline</h2>
+                                <p class="card-subtitle">
+                                    Systematic, mathematically grounded lifecycle from raw institutional cohort data to operational counselor triage
+                                </p>
+                            </div>
+                            <span class="card-badge" style="background: rgba(16, 185, 129, 0.1); color: var(--color-success); border-color: rgba(16, 185, 129, 0.2);">
+                                100% Production Ready
+                            </span>
+                        </div>
+
+                        <div class="pipeline-grid">
+                            <!-- Stage 1 -->
+                            <div class="pipeline-step-card">
+                                <div class="pipeline-step-header">
+                                    <div class="pipeline-step-number">01</div>
+                                    <span class="pipeline-step-badge">Ingestion</span>
+                                </div>
+                                <h3 class="pipeline-step-title">Data Ingestion & Binarization</h3>
+                                <p class="pipeline-step-desc">
+                                    Ingests the UCI Higher Education dataset (ID 697) comprising <b>4,424 student records</b> and <b>36 attributes</b> (demographic, socio-economic, 1st & 2nd semester academic performance).
+                                </p>
+                                <div class="pipeline-step-meta">
+                                    <span>Target: Dropout (1,421 / 32.1%) vs Retained (3,003 / 67.9%)</span>
+                                </div>
+                            </div>
+
+                            <!-- Stage 2 -->
+                            <div class="pipeline-step-card">
+                                <div class="pipeline-step-header">
+                                    <div class="pipeline-step-number">02</div>
+                                    <span class="pipeline-step-badge">Validation</span>
+                                </div>
+                                <h3 class="pipeline-step-title">Leakage-Free 5-Fold Cross-Validation</h3>
+                                <p class="pipeline-step-desc">
+                                    Evaluates candidate classifiers using Scikit-Learn <code>Pipeline</code> with <code>StandardScaler</code> fitted strictly on training folds to guarantee zero data leakage.
+                                </p>
+                                <div class="pipeline-step-meta">
+                                    <span>Production RF: <b>91.98% ROC-AUC</b>, <b>87.50% Precision</b>, <b>78.59% F1</b></span>
+                                </div>
+                            </div>
+
+                            <!-- Stage 3 -->
+                            <div class="pipeline-step-card">
+                                <div class="pipeline-step-header">
+                                    <div class="pipeline-step-number">03</div>
+                                    <span class="pipeline-step-badge">XAI</span>
+                                </div>
+                                <h3 class="pipeline-step-title">Game-Theoretic Explainability (TreeSHAP)</h3>
+                                <p class="pipeline-step-desc">
+                                    Computes an exact $4,424 \times 36$ SHAP matrix via Lundberg & Lee TreeExplainer. Decomposes each student's log-odds into additive Shapley values satisfying efficiency and symmetry axioms.
+                                </p>
+                                <div class="pipeline-step-meta">
+                                    <span>Exact local feature attributions (red = risk, teal = protective)</span>
+                                </div>
+                            </div>
+
+                            <!-- Stage 4 -->
+                            <div class="pipeline-step-card">
+                                <div class="pipeline-step-header">
+                                    <div class="pipeline-step-number">04</div>
+                                    <span class="pipeline-step-badge">Formulation</span>
+                                </div>
+                                <h3 class="pipeline-step-title">Situational Urgency Scoring</h3>
+                                <p class="pipeline-step-desc">
+                                    Disentangles statistical historical likelihood from immediate administrative crises via formula:
+                                    <code>0.4*(1-Tuition) + 0.3*Debtor + 0.3*(approved=0 and enrolled>0)</code>.
+                                </p>
+                                <div class="pipeline-step-meta">
+                                    <span>Actionable urgency score scaled in range [0.0, 1.0]</span>
+                                </div>
+                            </div>
+
+                            <!-- Stage 5 -->
+                            <div class="pipeline-step-card">
+                                <div class="pipeline-step-header">
+                                    <div class="pipeline-step-number">05</div>
+                                    <span class="pipeline-step-badge">Triage</span>
+                                </div>
+                                <h3 class="pipeline-step-title">Priority-Ranked Triage Queue</h3>
+                                <p class="pipeline-step-desc">
+                                    Calculates composite Referral Priority: <code>Priority = Risk * (1 + w * Urgency)</code> with tunable weight $w \in [0.0, 2.0]$. Stratifies cohort into High (1,145), Medium (792), and Low (2,487).
+                                </p>
+                                <div class="pipeline-step-meta">
+                                    <span>1,937 eligible students ordered for counselor triage</span>
+                                </div>
+                            </div>
+
+                            <!-- Stage 6 -->
+                            <div class="pipeline-step-card">
+                                <div class="pipeline-step-header">
+                                    <div class="pipeline-step-number">06</div>
+                                    <span class="pipeline-step-badge">Matching</span>
+                                </div>
+                                <h3 class="pipeline-step-title">Capacity-Constrained Greedy Matching</h3>
+                                <p class="pipeline-step-desc">
+                                    Matches student primary SHAP domain (Academic, Financial, Engagement) to 6 advisor specialties under institutional caseload constraints (1,700 seats).
+                                </p>
+                                <div class="pipeline-step-meta">
+                                    <span>Fills 1,700 specialist slots; designates 237 overflow as Unassigned</span>
+                                </div>
+                            </div>
+
+                            <!-- Stage 7 -->
+                            <div class="pipeline-step-card">
+                                <div class="pipeline-step-header">
+                                    <div class="pipeline-step-number">07</div>
+                                    <span class="pipeline-step-badge">Architecture</span>
+                                </div>
+                                <h3 class="pipeline-step-title">Dual-Interface Modern SaaS Architecture</h3>
+                                <p class="pipeline-step-desc">
+                                    FastAPI async REST backend serving 10 endpoints paired with a responsive Vanilla JS/CSS client (dark/light themes, Chart.js) and legacy Streamlit viva fallback.
+                                </p>
+                                <div class="pipeline-step-meta">
+                                    <span>Decoupled API architecture + state persistence in <code>state.json</code></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- TAB 2: Technology Stack -->
+                    <div class="subnav-pane" id="about-tab-techstack" style="display: none;">
+                        <!-- Technology Stack Badges Card -->
+                    <div class="card" style="margin-bottom: 2rem;">
+                        <div class="card-header">
+                            <div>
+                                <h2 class="card-title">Technical Stack & Implementation Frameworks</h2>
+                                <p class="card-subtitle">
+                                    Enterprise-ready open-source libraries ensuring high throughput, deterministic reproducibility, and zero build tool overhead
+                                </p>
+                            </div>
+                            <span class="card-badge">Zero Build Dependencies</span>
+                        </div>
+
+                        <div class="tech-stack-grid">
+                            <div class="tech-badge-card">
+                                <div class="tech-badge-header">
+                                    <span class="tech-badge-icon" style="font-size: 0.82rem; font-weight: 800; color: var(--color-teal); background: var(--bg-surface); padding: 3px 6px; border-radius: 4px; border: 1px solid var(--border-subtle);">API</span>
+                                    <h4 class="tech-badge-title">FastAPI</h4>
+                                </div>
+                                <div class="tech-badge-role">REST API Backend Engine</div>
+                                <p class="tech-badge-desc">
+                                    High-performance asynchronous ASGI framework with automatic OpenAPI/Swagger documentation, Pydantic data validation, and sub-millisecond JSON response times.
+                                </p>
+                            </div>
+
+                            <div class="tech-badge-card">
+                                <div class="tech-badge-header">
+                                    <span class="tech-badge-icon" style="font-size: 0.82rem; font-weight: 800; color: var(--color-teal); background: var(--bg-surface); padding: 3px 6px; border-radius: 4px; border: 1px solid var(--border-subtle);">ML</span>
+                                    <h4 class="tech-badge-title">Scikit-Learn</h4>
+                                </div>
+                                <div class="tech-badge-role">Machine Learning & Validation</div>
+                                <p class="tech-badge-desc">
+                                    Robust tabular classification via Random Forest and Logistic Regression, featuring leakage-free Pipeline encapsulation and Stratified 5-Fold Cross-Validation.
+                                </p>
+                            </div>
+
+                            <div class="tech-badge-card">
+                                <div class="tech-badge-header">
+                                    <span class="tech-badge-icon" style="font-size: 0.82rem; font-weight: 800; color: var(--color-teal); background: var(--bg-surface); padding: 3px 6px; border-radius: 4px; border: 1px solid var(--border-subtle);">XAI</span>
+                                    <h4 class="tech-badge-title">SHAP Library</h4>
+                                </div>
+                                <div class="tech-badge-role">Game-Theoretic Explainability</div>
+                                <p class="tech-badge-desc">
+                                    High-speed TreeExplainer implementation computing exact local feature attributions $\phi_i$ with zero sampling variance across all 4,424 student records.
+                                </p>
+                            </div>
+
+                            <div class="tech-badge-card">
+                                <div class="tech-badge-header">
+                                    <span class="tech-badge-icon" style="font-size: 0.82rem; font-weight: 800; color: var(--color-teal); background: var(--bg-surface); padding: 3px 6px; border-radius: 4px; border: 1px solid var(--border-subtle);">VIZ</span>
+                                    <h4 class="tech-badge-title">Chart.js (CDN)</h4>
+                                </div>
+                                <div class="tech-badge-role">Client-Side Data Visualization</div>
+                                <p class="tech-badge-desc">
+                                    Lightweight HTML5 Canvas rendering engine driving interactive risk doughnuts, top-course distributions, and responsive horizontal SHAP feature contribution bar charts.
+                                </p>
+                            </div>
+
+                            <div class="tech-badge-card">
+                                <div class="tech-badge-header">
+                                    <span class="tech-badge-icon" style="font-size: 0.82rem; font-weight: 800; color: var(--color-teal); background: var(--bg-surface); padding: 3px 6px; border-radius: 4px; border: 1px solid var(--border-subtle);">DATA</span>
+                                    <h4 class="tech-badge-title">Pandas & NumPy</h4>
+                                </div>
+                                <div class="tech-badge-role">Vectorized Matrix Operations</div>
+                                <p class="tech-badge-desc">
+                                    Vectorized data processing for rapid cohort slicing, dynamic multi-field sorting, situational urgency calculation, and live CSV report generation.
+                                </p>
+                            </div>
+
+                            <div class="tech-badge-card">
+                                <div class="tech-badge-header">
+                                    <span class="tech-badge-icon" style="font-size: 0.82rem; font-weight: 800; color: var(--color-teal); background: var(--bg-surface); padding: 3px 6px; border-radius: 4px; border: 1px solid var(--border-subtle);">WEB</span>
+                                    <h4 class="tech-badge-title">Vanilla HTML5 / CSS3 / ES6+</h4>
+                                </div>
+                                <div class="tech-badge-role">Native Web User Interface</div>
+                                <p class="tech-badge-desc">
+                                    Modern CSS custom properties (design tokens), flexbox/grid layouts, debounced search filters, accessible ARIA attributes, and zero npm bundling requirements.
+                                </p>
+                            </div>
+
+                            <div class="tech-badge-card">
+                                <div class="tech-badge-header">
+                                    <span class="tech-badge-icon" style="font-size: 0.82rem; font-weight: 800; color: var(--color-teal); background: var(--bg-surface); padding: 3px 6px; border-radius: 4px; border: 1px solid var(--border-subtle);">APP</span>
+                                    <h4 class="tech-badge-title">Streamlit</h4>
+                                </div>
+                                <div class="tech-badge-role">Viva Defense Fallback</div>
+                                <p class="tech-badge-desc">
+                                    Preserved in <code>app.py</code> on port 8501 as an exploratory dashboard and instant presentation fallback during viva oral examination.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    </div>
+
+                    <!-- TAB 3: Viva Defense Dossier -->
+                    <div class="subnav-pane" id="about-tab-viva" style="display: none;">
+                        <!-- Viva Voce Oral Defense Interactive Guide -->
+                    <div class="card" style="margin-bottom: 2rem;">
+                        <div class="card-header">
+                            <div>
+                                <h2 class="card-title">Viva Voce Oral Defense Preparation Guide</h2>
+                                <p class="card-subtitle">
+                                    Anticipated academic examination questions, theoretical justifications, and rigorous defenses for university evaluators
+                                </p>
+                            </div>
+                            <span class="card-badge" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6; border-color: rgba(139, 92, 246, 0.2);">
+                                10 Core Justifications
+                            </span>
+                        </div>
+
+                        <div class="viva-accordion" id="viva-accordion">
+                            <!-- Q1 -->
+                            <div class="viva-item">
+                                <button class="viva-question" type="button">
+                                    <span class="viva-q-badge">Q1</span>
+                                    <span class="viva-q-text">Why choose Random Forest over Deep Learning (e.g. Neural Networks) for this tabular dataset?</span>
+                                    <span class="viva-chevron"></span>
+                                </button>
+                                <div class="viva-answer">
+                                    <p>
+                                        Tabular datasets with heterogeneous features (categorical demographics, ordinal socio-economic factors, and continuous GPA/credit counts) are proven by extensive empirical benchmarks (such as Grinsztajn et al., <i>NeurIPS 2022</i>) to perform better or equal on tree-based ensembles compared to Deep Neural Networks.
+                                    </p>
+                                    <ul>
+                                        <li><b>Sample Efficiency:</b> With $N = 4,424$ samples, deep neural networks are prone to severe overfitting without aggressive inductive biases or hyperparameter tuning.</li>
+                                        <li><b>Exact Game-Theoretic XAI:</b> Tree-based models allow polynomial-time exact TreeSHAP computation in $\mathcal{O}(TLD^2)$ time ($T$ trees, $L$ leaves, depth $D$), whereas neural networks require KernelSHAP or Integrated Gradients which introduce sampling variance and high latency.</li>
+                                        <li><b>Empirical Evidence:</b> Our 5-fold cross-validation demonstrated that Random Forest achieved an outstanding <b>91.98% ROC-AUC</b> with high stability ($\pm 1.00\%$), outperforming baseline Logistic Regression (91.82%).</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Q2 -->
+                            <div class="viva-item">
+                                <button class="viva-question" type="button">
+                                    <span class="viva-q-badge">Q2</span>
+                                    <span class="viva-q-text">Why binarize the 3-class target into "Dropout" vs "Retained" (Graduate + Enrolled)?</span>
+                                    <span class="viva-chevron"></span>
+                                </button>
+                                <div class="viva-answer">
+                                    <p>
+                                        The raw UCI dataset contains three target classes: <i>Dropout</i> (1,421), <i>Graduate</i> (2,209), and <i>Enrolled</i> (794). Binarizing into Dropout vs Retained was chosen based on core institutional intervention logic:
+                                    </p>
+                                    <ul>
+                                        <li><b>Intervention Asymmetry:</b> From a university retention perspective, active enrolled students and successful graduates represent institutional continuity; the urgent risk cohort requiring advisor resources is solely the <i>Dropout</i> segment.</li>
+                                        <li><b>Temporal Snapshot Reality:</b> The dataset records an observation snapshot; students labeled as "Enrolled" are actively progressing and have not failed. Merging them into "Retained" prevents misclassifying actively studying students as attrition failures.</li>
+                                        <li><b>Statistical Optimization:</b> Binarization simplifies multi-class confusion and maximizes statistical recall (71.36%) and precision (87.50%) on the minority class of interest ($32.1\%$).</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Q3 -->
+                            <div class="viva-item">
+                                <button class="viva-question" type="button">
+                                    <span class="viva-q-badge">Q3</span>
+                                    <span class="viva-q-text">How was data leakage strictly prevented during model training and evaluation?</span>
+                                    <span class="viva-chevron"></span>
+                                </button>
+                                <div class="viva-answer">
+                                    <p>
+                                        Data leakage occurs when information from outside the training dataset is inadvertently used to fit feature transformers or model weights. In EduGuard:
+                                    </p>
+                                    <ul>
+                                        <li><b>Scikit-Learn Pipeline Encapsulation:</b> Feature preprocessing (e.g., <code>StandardScaler</code>) was packaged inside an atomic <code>Pipeline</code> object. The scaler's mean $\mu$ and standard deviation $\sigma$ were computed strictly on the training partition ($k-1$ folds).</li>
+                                        <li><b>Independent Test Evaluation:</b> Test folds were transformed using the frozen training fold statistics without refitting.</li>
+                                        <li><b>Out-of-Fold Risk Scores:</b> All risk probabilities in <code>risk_scores.csv</code> represent true out-of-fold predictions produced across stratified folds, ensuring that zero student risk scores reflect overfitted training evaluation.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Q4 -->
+                            <div class="viva-item">
+                                <button class="viva-question" type="button">
+                                    <span class="viva-q-badge">Q4</span>
+                                    <span class="viva-q-text">What is the theoretical advantage of SHAP TreeExplainer over classical Gini Impurity?</span>
+                                    <span class="viva-chevron"></span>
+                                </button>
+                                <div class="viva-answer">
+                                    <p>
+                                        Classical feature importances (such as Gini Impurity or Mean Decrease in Impurity) suffer from two fundamental weaknesses: they are exclusively <b>global</b> (providing zero explanation for why Student #2237 is at risk) and they exhibit significant <b>cardinality bias</b> toward continuous features.
+                                    </p>
+                                    <ul>
+                                        <li><b>Cooperative Game Theory Axioms:</b> Lundberg & Lee's TreeSHAP satisfies four formal mathematical properties: <i>Efficiency</i> (local feature attributions sum up to $f(x) - \mathbb{E}[f(x)]$), <i>Symmetry</i>, <i>Dummy Player</i>, and <i>Additivity</i>.</li>
+                                        <li><b>Local Directionality:</b> While Gini only outputs a non-negative scalar, SHAP indicates both magnitude and direction - showing whether 2nd semester approved units pushed risk up ($+0.34$, red) or buffered risk down ($-0.18$, teal) for a specific individual.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Q5 -->
+                            <div class="viva-item">
+                                <button class="viva-question" type="button">
+                                    <span class="viva-q-badge">Q5</span>
+                                    <span class="viva-q-text">Why introduce Situational Urgency instead of sorting by ML Risk alone?</span>
+                                    <span class="viva-chevron"></span>
+                                </button>
+                                <div class="viva-answer">
+                                    <p>
+                                        Machine learning models evaluate historical academic trajectory over time (e.g., prior semester GPA, entrance scores). However, university dropout dynamics frequently involve acute, operational crises:
+                                    </p>
+                                    <ul>
+                                        <li><b>Imminent Institutional Disqualification:</b> A student with a moderate statistical risk of $0.55$ who has unpaid tuition fees and zero approved units faces immediate administrative disenrollment at the end of the current term.</li>
+                                        <li><b>Composite Triage Formula:</b> By computing $\text{Priority} = \text{Risk} \times (1 + w \times \text{Urgency})$ with $w \in [0.0, 2.0]$, advisors can elevate students facing acute administrative deadlines above those who have high statistical risk but stable enrollment standing.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Q6 -->
+                            <div class="viva-item">
+                                <button class="viva-question" type="button">
+                                    <span class="viva-q-badge">Q6</span>
+                                    <span class="viva-q-text">How does the capacity-constrained greedy algorithm handle advisor overload?</span>
+                                    <span class="viva-chevron"></span>
+                                </button>
+                                <div class="viva-answer">
+                                    <p>
+                                        Real university counseling centers have finite advisor headcount. In our institutional model, 6 advisors offer a total capacity of 1,700 caseload slots, whereas 1,937 students fall into Medium or High risk tiers:
+                                    </p>
+                                    <ul>
+                                        <li><b>Greedy Priority Allocation:</b> Students are sorted descending by composite referral priority. The highest-need students are assigned first to their primary SHAP specialty advisor.</li>
+                                        <li><b>Graceful Overflow Management:</b> When an advisor reaches 100% capacity, the algorithm falls back to generalist advisors. Once all 1,700 seats are saturated, the remaining 237 students are designated as <i>"Unassigned - capacity full"</i>.</li>
+                                        <li><b>No Silent Loss:</b> Rather than silently discarding or overloading counselors past safe limits, the overflow cohort is prominently surfaced in the UI to justify requests for additional counseling resources.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Q7 -->
+                            <div class="viva-item">
+                                <button class="viva-question" type="button">
+                                    <span class="viva-q-badge">Q7</span>
+                                    <span class="viva-q-text">What guardrails prevent punitive or discriminatory automated actions?</span>
+                                    <span class="viva-chevron"></span>
+                                </button>
+                                <div class="viva-answer">
+                                    <p>
+                                        EduGuard enforces strict ethical design patterns to prevent algorithmic harm:
+                                    </p>
+                                    <ul>
+                                        <li><b>Strict Decision-Support Framing:</b> The platform never dispatches automated disciplinary notices or changes enrollment statuses. It serves exclusively as a counselor workbench.</li>
+                                        <li><b>NoRiskFactorsError Guardrail:</b> If a student has no positive risk factors (e.g., low-risk student), the system renders an explicit informational banner preventing counselors from inventing speculative deficits.</li>
+                                        <li><b>Audit Trail:</b> All advisor assignments and case status updates are logged with timestamps in <code>state.json</code>, enabling transparent oversight.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Q8 -->
+                            <div class="viva-item">
+                                <button class="viva-question" type="button">
+                                    <span class="viva-q-badge">Q8</span>
+                                    <span class="viva-q-text">How are local SHAP factors categorized into Academic, Financial, and Engagement specialties?</span>
+                                    <span class="viva-chevron"></span>
+                                </button>
+                                <div class="viva-answer">
+                                    <p>
+                                        To enable specialized counselor routing, the 36 raw features are mapped into 3 domain clusters:
+                                    </p>
+                                    <ul>
+                                        <li><b>Academic Specialty:</b> 1st & 2nd semester approved units, evaluated units, grade averages, previous qualifications, entrance qualifications.</li>
+                                        <li><b>Financial Specialty:</b> Tuition fees up to date, debtor status, scholarship holder, parental educational/employment status.</li>
+                                        <li><b>Engagement Specialty:</b> Course selection, daytime vs evening attendance, enrolled units vs approved units ratio, application order, age at enrollment.</li>
+                                    </ul>
+                                    <p>
+                                        The dominant positive SHAP attribution determines whether the student receives an Academic, Financial, or Engagement advisor referral.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Q9 -->
+                            <div class="viva-item">
+                                <button class="viva-question" type="button">
+                                    <span class="viva-q-badge">Q9</span>
+                                    <span class="viva-q-text">Why build a decoupled FastAPI + Vanilla JS SPA instead of only Streamlit?</span>
+                                    <span class="viva-chevron"></span>
+                                </button>
+                                <div class="viva-answer">
+                                    <p>
+                                        Streamlit is excellent for internal exploratory prototypes, but has structural limitations in enterprise settings (session reruns on every interaction, high WebSocket overhead, and coupled state).
+                                    </p>
+                                    <ul>
+                                        <li><b>RESTful Decoupling:</b> The FastAPI backend exposes 10 modular REST endpoints with OpenAPI documentation, allowing third-party LMS integration (e.g., Canvas, Moodle, Ellucian Banner).</li>
+                                        <li><b>Zero-Dependency Client:</b> The Vanilla JS frontend delivers instantaneous client-side filtering, sorting, pagination, and theme switching without npm bundle bloat.</li>
+                                        <li><b>Defense Redundancy:</b> Preserving <code>app.py</code> on port 8501 guarantees high operational resilience during university examination.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Q10 -->
+                            <div class="viva-item">
+                                <button class="viva-question" type="button">
+                                    <span class="viva-q-badge">Q10</span>
+                                    <span class="viva-q-text">What are the primary methodological limitations of this study?</span>
+                                    <span class="viva-chevron"></span>
+                                </button>
+                                <div class="viva-answer">
+                                    <p>
+                                        Academic rigor requires transparent acknowledgment of constraints:
+                                    </p>
+                                    <ul>
+                                        <li><b>Single-Institution Context:</b> Data originates from a single Portuguese polytechnic institute (2008-2019). Institutional tuition structures and academic regulations may differ in other countries.</li>
+                                        <li><b>Simulated Counselor Capacities:</b> Caseload quotas (1,700 seats) and advisor specialties are modeled from institutional counseling norms rather than institutional telemetry.</li>
+                                        <li><b>Out-of-Fold Estimation:</b> Risk scores represent out-of-fold probabilistic estimates; prospective real-world deployment would require continuous drift monitoring and annual re-training.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project Metadata & Defense Dossier Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2 class="card-title">Academic Project Metadata</h2>
+                                <p class="card-subtitle">Formal university examination details and dataset citations</p>
+                            </div>
+                            <span class="card-badge" style="background: rgba(37, 99, 235, 0.1); color: var(--color-primary); border-color: rgba(37, 99, 235, 0.2);">
+                                Viva Defense Dossier
+                            </span>
+                        </div>
+
+                        <div class="reports-kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 1.5rem;">
+                            <div class="report-kpi-card">
+                                <div class="report-kpi-label">Project Title</div>
+                                <div class="report-kpi-value" style="font-size: 1.1rem; color: var(--text-primary); font-weight: 700;">EduGuard</div>
+                                <div class="report-kpi-meta">Student Retention & XAI System</div>
+                            </div>
+                            <div class="report-kpi-card">
+                                <div class="report-kpi-label">Principal Author</div>
+                                <div class="report-kpi-value" style="font-size: 1.1rem; color: var(--text-primary); font-weight: 700;">Umair Khan</div>
+                                <div class="report-kpi-meta">Individual Final AI Project</div>
+                            </div>
+                            <div class="report-kpi-card">
+                                <div class="report-kpi-label">Defense Deadline</div>
+                                <div class="report-kpi-value" style="font-size: 1.1rem; color: var(--color-primary); font-weight: 700;">Nov 15, 2026</div>
+                                <div class="report-kpi-meta">Oral Viva Examination Target</div>
+                            </div>
+                            <div class="report-kpi-card">
+                                <div class="report-kpi-label">Benchmark Dataset</div>
+                                <div class="report-kpi-value" style="font-size: 1.1rem; color: var(--text-primary); font-weight: 700;">UCI #697</div>
+                                <div class="report-kpi-meta">4,424 records, 36 features</div>
+                            </div>
+                        </div>
+
+                        <div style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
+                            <b>Citation Reference:</b> Realinho, V., Vieira, M., Machado, J., & Baptist, L. (2021). <i>Predict Students' Dropout and Academic Success</i>. UCI Machine Learning Repository. <a href="https://doi.org/10.24432/C5MC89" target="_blank" rel="noopener" style="color: var(--color-primary);">https://doi.org/10.24432/C5MC89</a>.
+                        </div>
+                    </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- Quick Assign Counselor Modal Popup -->
+    <div class="modal-backdrop" id="assign-modal" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 class="modal-title">Advisor Assignment</h3>
+                <button class="modal-close-btn" id="btn-close-assign-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                    Assign or change the advisor for <b id="modal-student-name">Student #0</b>:
+                </p>
+                <div style="margin-bottom: 1rem;">
+                    <label class="filter-label" style="margin-bottom: 6px;">Select Advisor</label>
+                    <select id="modal-counselor-select" class="form-select">
+                        <option value="Unassigned">Unassigned</option>
+                        <option value="Dr. Elena Rostova">Dr. Elena Rostova (Academic)</option>
+                        <option value="Prof. Marcus Vance">Prof. Marcus Vance (Academic)</option>
+                        <option value="Sarah Jenkins">Sarah Jenkins (Financial)</option>
+                        <option value="David Kim">David Kim (Financial)</option>
+                        <option value="Maria Santos">Maria Santos (Engagement)</option>
+                        <option value="Dr. Alex Taylor">Dr. Alex Taylor (Engagement)</option>
+                    </select>
+                </div>
+                <div id="modal-counselor-preview" style="font-size: 0.8rem; color: var(--text-muted); background: var(--bg-page); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-subtle);">
+                    Note: Assignments are persisted to server memory and <code>state.json</code>.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-sm btn-outline" id="btn-cancel-assign" style="background: var(--bg-surface); color: var(--text-secondary); border: 1px solid var(--border-card);">
+                    Cancel
+                </button>
+                <button class="btn btn-sm btn-primary" id="btn-confirm-assign">
+                    Confirm Assignment
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Main JavaScript Logic -->
+    <script src="script.js?v=8.0"></script>
+</body>
+</html>

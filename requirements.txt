@@ -10,3 +10,7 @@ shap>=0.44.0
 
 # User Interface (Step 4)
 streamlit>=1.30.0
+
+# FastAPI Backend
+fastapi>=0.109.0
+uvicorn>=0.27.0
