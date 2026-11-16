@@ -15,6 +15,8 @@
  */
 
 // Global Application State
+const API_BASE = () => (typeof window !== "undefined" && window.API_BASE) ? window.API_BASE.replace(/\/+$/, "") : "";
+
 const state = {
     currentPage: "dashboard",
     summaryData: null,
@@ -330,8 +332,8 @@ async function loadLandingStats() {
 
     try {
         const [sumRes, couRes] = await Promise.all([
-            fetch("/api/summary?urgency_weight=0.5"),
-            fetch("/api/counselors")
+            fetch(`${API_BASE()}/api/summary?urgency_weight=0.5`),
+            fetch(`${API_BASE()}/api/counselors`)
         ]);
         if (!sumRes.ok || !couRes.ok) throw new Error("API unavailable");
 
@@ -423,7 +425,7 @@ async function loadDashboardData() {
     if (errorBanner) errorBanner.style.display = "none";
 
     try {
-        const response = await fetch(`/api/summary?urgency_weight=${state.urgencyWeight}`);
+        const response = await fetch(`${API_BASE()}/api/summary?urgency_weight=${state.urgencyWeight}`);
         
         if (!response.ok) {
             throw new Error(`HTTP error ${response.status}: ${response.statusText}`);
@@ -444,7 +446,7 @@ async function loadDashboardData() {
         
         if (errorBanner && errorMessage) {
             errorMessage.innerHTML = `
-                Could not connect to <code>http://127.0.0.1:8000/api/summary</code>.<br>
+                Could not connect to <code>${API_BASE() || "http://127.0.0.1:8000"}/api/summary</code>.<br>
                 <b>Details:</b> ${err.message}. Please ensure <code>uvicorn server:app</code> is running.
             `;
             errorBanner.style.display = "flex";
@@ -776,7 +778,7 @@ async function loadStudentsData() {
             urgency_weight: state.urgencyWeight
         });
 
-        const response = await fetch(`/api/students?${queryParams.toString()}`);
+        const response = await fetch(`${API_BASE()}/api/students?${queryParams.toString()}`);
         if (!response.ok) {
             throw new Error(`HTTP error ${response.status}: ${response.statusText}`);
         }
@@ -1005,7 +1007,7 @@ function downloadStudentsCSV() {
         search: state.students.search,
         urgency_weight: state.urgencyWeight
     });
-    window.location.href = `/api/export.csv?${params.toString()}`;
+    window.location.href = `${API_BASE()}/api/export.csv?${params.toString()}`;
 }
 
 // ============================================================================
@@ -1080,7 +1082,7 @@ async function submitAssignStudent() {
     if (confirmBtn) confirmBtn.disabled = true;
 
     try {
-        const response = await fetch(`/api/assign/${studentId}`, {
+        const response = await fetch(`${API_BASE()}/api/assign/${studentId}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ counselor: chosenCounselor })
@@ -1216,7 +1218,7 @@ async function loadStudentProfile(studentId) {
     if (pre) pre.textContent = `Loading SHAP attributions and briefing for Student #${studentId}...`;
 
     try {
-        const response = await fetch(`/api/students/${studentId}?urgency_weight=${state.urgencyWeight}`);
+        const response = await fetch(`${API_BASE()}/api/students/${studentId}?urgency_weight=${state.urgencyWeight}`);
         if (!response.ok) {
             throw new Error(`Student #${studentId} not found (HTTP ${response.status})`);
         }
@@ -1516,7 +1518,7 @@ async function handleProfileAutoAssign() {
 
     try {
         // 1. Fetch live counselor roster
-        const rosterRes = await fetch("/api/counselors");
+        const rosterRes = await fetch(`${API_BASE()}/api/counselors`);
         if (!rosterRes.ok) throw new Error("Could not fetch counselor roster from backend.");
         const rosterData = await rosterRes.json();
         const counselors = rosterData.counselors;
@@ -1546,7 +1548,7 @@ async function handleProfileAutoAssign() {
         }
 
         // 4. Submit assignment to POST /api/assign/{id}
-        const assignRes = await fetch(`/api/assign/${studentId}`, {
+        const assignRes = await fetch(`${API_BASE()}/api/assign/${studentId}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ counselor: chosenCounselor })
@@ -1573,7 +1575,7 @@ async function handleProfileAutoAssign() {
  */
 async function updateStudentStatus(studentId, newStatus) {
     try {
-        const response = await fetch(`/api/status/${studentId}`, {
+        const response = await fetch(`${API_BASE()}/api/status/${studentId}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ status: newStatus })
@@ -1654,7 +1656,7 @@ async function loadCounselorsData() {
     `;
 
     try {
-        const response = await fetch("/api/counselors");
+        const response = await fetch(`${API_BASE()}/api/counselors`);
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
@@ -1834,7 +1836,7 @@ function initAssignmentsEventListeners() {
     if (exportBtn) {
         exportBtn.addEventListener("click", () => {
             showToast("Generating assignments CSV export...", "info");
-            window.location.href = `/api/export.csv?urgency_weight=${state.urgencyWeight}`;
+            window.location.href = `${API_BASE()}/api/export.csv?urgency_weight=${state.urgencyWeight}`;
         });
     }
 }
@@ -1846,8 +1848,8 @@ async function loadAssignmentsPageData() {
     try {
         // Fetch counselor caseloads and top summary
         const [counselorsRes, summaryRes] = await Promise.all([
-            fetch("/api/counselors"),
-            fetch(`/api/summary?urgency_weight=${state.urgencyWeight}`)
+            fetch(`${API_BASE()}/api/counselors`),
+            fetch(`${API_BASE()}/api/summary?urgency_weight=${state.urgencyWeight}`)
         ]);
 
         if (!counselorsRes.ok || !summaryRes.ok) {
@@ -2009,7 +2011,7 @@ async function executeAutoAssignment() {
     }
 
     try {
-        const response = await fetch("/api/assign/auto", {
+        const response = await fetch(`${API_BASE()}/api/assign/auto`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -2053,7 +2055,7 @@ async function executeResetAssignments() {
     if (btn) btn.disabled = true;
 
     try {
-        const response = await fetch("/api/reset", {
+        const response = await fetch(`${API_BASE()}/api/reset`, {
             method: "POST"
         });
 
@@ -2085,7 +2087,7 @@ async function executeResetAssignments() {
  */
 async function loadReportsPageData() {
     try {
-        const response = await fetch("/api/metrics");
+        const response = await fetch(`${API_BASE()}/api/metrics`);
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }

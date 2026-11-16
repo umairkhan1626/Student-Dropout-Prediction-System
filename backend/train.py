@@ -24,6 +24,8 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 
+_HERE = Path(__file__).parent
+
 from sklearn.model_selection import StratifiedKFold, cross_validate
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
@@ -237,8 +239,8 @@ def main():
     """
     Main execution pipeline for Step 1.
     """
-    data_file = Path("data/data.csv")
-    results_file = Path("results.csv")
+    data_file = _HERE / "data" / "data.csv"
+    results_file = _HERE / "results.csv"
     target_column = "Target"
 
     # 1. Check if dataset exists

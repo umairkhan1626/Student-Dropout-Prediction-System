@@ -57,6 +57,11 @@ from assigner import (
 # -----------------------------------------------------------------------------
 # INITIALIZE FASTAPI APPLICATION
 # -----------------------------------------------------------------------------
+import os
+
+# Directory that contains this file — used for all relative paths
+_HERE = Path(__file__).parent
+
 app = FastAPI(
     title="EduGuard - Student Retention Portal API",
     description=(
@@ -66,10 +71,13 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Enable CORS for frontend flexibility
+# CORS — read allowed origins from env, default to * for local/demo use
+_allowed_origins_env = os.environ.get("ALLOWED_ORIGINS", "*")
+_allowed_origins = [o.strip() for o in _allowed_origins_env.split(",")] if _allowed_origins_env != "*" else ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]
@@ -126,7 +134,7 @@ except Exception as e:
 # -----------------------------------------------------------------------------
 # PERSISTENT STATE MANAGEMENT (survives restart)
 # -----------------------------------------------------------------------------
-STATE_FILE = Path("state.json")
+STATE_FILE = _HERE / "state.json"
 
 
 def load_persistent_state() -> tuple[Dict[int, str], Dict[int, str]]:
@@ -670,7 +678,7 @@ def get_metrics():
     """
     # 1. Model CV Results from results.csv
     cv_results = []
-    results_path = Path("results.csv")
+    results_path = _HERE / "results.csv"
     if results_path.is_file():
         res_df = pd.read_csv(results_path)
         cv_results = res_df.to_dict(orient="records")
@@ -763,7 +771,7 @@ def get_shap_image():
     """
     Returns the global SHAP feature importance plot image (shap_summary.png).
     """
-    img_path = Path("shap_summary.png")
+    img_path = _HERE / "shap_summary.png"
     if not img_path.is_file():
         raise HTTPException(status_code=404, detail="shap_summary.png not found.")
     return FileResponse(img_path, media_type="image/png")
@@ -843,11 +851,13 @@ def export_csv(
 
 
 # -----------------------------------------------------------------------------
-# STATIC FILES SERVING (Mount after API routes to avoid path collision)
+# STATIC FILES SERVING (optional — serves frontend if ../frontend exists)
+# Run: cd backend && uvicorn server:app --port 8000 for the full local site.
+# In production deploy backend/ and frontend/ separately.
 # -----------------------------------------------------------------------------
-web_dir = Path("web")
-web_dir.mkdir(exist_ok=True)
-app.mount("/", StaticFiles(directory="web", html=True), name="static")
+_frontend_dir = _HERE.parent / "frontend"
+if _frontend_dir.is_dir():
+    app.mount("/", StaticFiles(directory=str(_frontend_dir), html=True), name="static")
 
 
 # -----------------------------------------------------------------------------
@@ -855,5 +865,6 @@ app.mount("/", StaticFiles(directory="web", html=True), name="static")
 # -----------------------------------------------------------------------------
 if __name__ == "__main__":
     import uvicorn
-    print("\n[EduGuard Backend] Starting server at http://127.0.0.1:8000 ...")
-    uvicorn.run("server.py:app", host="127.0.0.1", port=8000, reload=True)
+    _port = int(os.environ.get("PORT", 8000))
+    print(f"\n[EduGuard Backend] Starting server at http://127.0.0.1:{_port} ...")
+    uvicorn.run("server:app", host="0.0.0.0", port=_port, reload=True)

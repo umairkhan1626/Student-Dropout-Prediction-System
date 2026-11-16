@@ -29,6 +29,8 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
+_HERE = Path(__file__).parent
+
 # Non-interactive matplotlib backend for reliable chart rendering
 import matplotlib
 matplotlib.use("Agg")
@@ -929,16 +931,18 @@ def main():
 
         # Stratified 5-Fold CV Table
         st.markdown("### 📊 Stratified 5-Fold Cross-Validation Metrics (`results.csv`)")
-        if Path("results.csv").is_file():
-            results_df = pd.read_csv("results.csv")
+        results_file = _HERE / "results.csv"
+        if results_file.is_file():
+            results_df = pd.read_csv(results_file)
             st.dataframe(results_df, width="stretch")
         else:
             st.info("results.csv not found.")
 
         # Global SHAP Plot
         st.markdown("### 🌍 Global Feature Importance Plot (`shap_summary.png`)")
-        if Path("shap_summary.png").is_file():
-            st.image("shap_summary.png", caption="Global SHAP Summary (Top 15 Features across 4,424 students)", width="stretch")
+        shap_img = _HERE / "shap_summary.png"
+        if shap_img.is_file():
+            st.image(str(shap_img), caption="Global SHAP Summary (Top 15 Features across 4,424 students)", width="stretch")
         else:
             st.info("shap_summary.png not found.")
 

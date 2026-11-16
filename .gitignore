@@ -5,3 +5,10 @@ __pycache__/
 env/
 venv/
 .ipynb_checkpoints/
+
+# Explicitly ensure required server artifacts are tracked
+!backend/data/data.csv
+!backend/model.pkl
+!backend/features.pkl
+!backend/shap_values.npy
+!backend/risk_scores.csv

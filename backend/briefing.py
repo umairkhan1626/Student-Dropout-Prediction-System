@@ -30,6 +30,8 @@ import numpy as np
 import pandas as pd
 import joblib
 
+_HERE = Path(__file__).parent
+
 
 class NoRiskFactorsError(Exception):
     """
@@ -48,10 +50,10 @@ def load_artifacts():
     - features.pkl: Feature names list
     - shap_values.npy: Precomputed Class 1 (Dropout) SHAP values matrix
     """
-    data_path = Path("data/data.csv")
-    scores_path = Path("risk_scores.csv")
-    features_path = Path("features.pkl")
-    shap_path = Path("shap_values.npy")
+    data_path = _HERE / "data" / "data.csv"
+    scores_path = _HERE / "risk_scores.csv"
+    features_path = _HERE / "features.pkl"
+    shap_path = _HERE / "shap_values.npy"
 
     for p in [data_path, scores_path, features_path, shap_path]:
         if not p.is_file():
@@ -273,7 +275,7 @@ def main():
     print(f"   -> Flagged {len(ranked_flagged):,} students requiring counseling intervention.")
 
     # Save to ranked_students.csv
-    output_ranked = Path("ranked_students.csv")
+    output_ranked = _HERE / "ranked_students.csv"
     ranked_flagged.to_csv(output_ranked, index=False)
     print(f"   -> Saved triage ranking table to: {output_ranked.resolve()}")
 

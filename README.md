@@ -1,58 +1,45 @@
-# Student Dropout Risk Prediction & Counselor Briefing System
+# Student Dropout Risk Prediction & Counselor Briefing System (EduGuard)
 
 An end-to-end, explainable AI decision-support platform designed for higher education academic advisors and counselors. The system predicts student dropout risk, calculates situational operational urgency, prioritizes students in a triage queue, and generates individualized, explainable advising briefings using SHAP (SHapley Additive exPlanations).
 
 ---
 
-## 📌 Project Architecture & Workflow
-
-```text
-       Raw Data (UCI Dataset)
-                 │
-                 ▼
-       ┌──────────────────┐
-       │     train.py     │ ──► Data Quality Checks & 5-Fold Stratified CV
-       └──────────────────┘     (Logistic Regression Baseline vs Random Forest)
-                 │              Outputs: results.csv
-                 ▼
-       ┌──────────────────┐
-       │    explain.py    │ ──► Out-of-Fold Risk Scoring & SHAP TreeExplainer
-       └──────────────────┘     Outputs: risk_scores.csv, shap_summary.png,
-                 │                       model.pkl, features.pkl, shap_values.npy
-                 ▼
-       ┌──────────────────┐
-       │   briefing.py    │ ──► Urgency Computation & Priority Ranking
-       └──────────────────┘     Guardrail: NoRiskFactorsError
-                 │              Outputs: ranked_students.csv
-                 ▼
-       ┌──────────────────┐
-       │      app.py      │ ──► Interactive Streamlit Counselor Dashboard
-       └──────────────────┘     (Triage Table, Urgency Slider, SHAP Charts, Briefings)
-```
-
----
-
 ## 📁 Repository Structure
+
+The project is cleanly decoupled into `backend/` and `frontend/` folders so each can be developed, tested, and deployed independently on different hosts:
 
 ```text
 AI PROJECT/
-├── data/
-│   └── data.csv              # Semicolon-delimited UCI student dataset (4,424 rows, 36 features)
-├── ACCEPTANCE.md             # Measurable acceptance criteria & operational assumptions
-├── requirements.txt          # Python library dependencies
-├── train.py                  # Step 1: Data checks, binarization, Stratified 5-Fold CV
-├── results.csv               # Model comparison results (mean ± std across 5 folds)
-├── explain.py                # Step 2: OOF risk scores, final model, SHAP global summary
-├── shap_summary.png          # Top 15 global feature importance bar plot
-├── model.pkl                 # Persisted production Random Forest model
-├── features.pkl              # Persisted list of feature column names
-├── shap_values.npy           # Precomputed Class 1 (Dropout) SHAP matrix (4424 x 36)
-├── risk_scores.csv           # Out-of-fold predicted dropout probabilities
-├── briefing.py               # Step 3: Urgency calculation, referral priority, briefings
-├── ranked_students.csv       # Triage queue ranked by referral priority
-├── app.py                    # Step 4: Interactive Streamlit web application
-├── VIVA_PREP.md              # Complete oral viva defense cheat sheet with Q&A
-└── README.md                 # Project documentation (this file)
+├── backend/
+│   ├── server.py              # FastAPI REST backend (API, CORS, state, and static serving fallback)
+│   ├── briefing.py            # Step 3: Urgency calculation, referral priority, briefings
+│   ├── assigner.py            # Specialty-matched counselor auto-assignment engine
+│   ├── train.py               # Step 1: Data checks, binarization, Stratified 5-Fold CV
+│   ├── explain.py             # Step 2: OOF risk scores, final model, SHAP global summary
+│   ├── app.py                 # Interactive Streamlit counselor dashboard (fallback UI)
+│   ├── styles.py              # Visual styling tokens for Streamlit
+│   ├── requirements.txt       # Backend Python dependencies
+│   ├── ACCEPTANCE.md          # Measurable acceptance criteria & operational assumptions
+│   ├── results.csv            # Model CV comparison results
+│   ├── model.pkl              # Persisted production Random Forest model
+│   ├── features.pkl           # Persisted feature names list
+│   ├── shap_values.npy        # Precomputed Class 1 SHAP values matrix (4424 x 36)
+│   ├── risk_scores.csv        # Out-of-fold predicted dropout probabilities
+│   ├── ranked_students.csv    # Triage queue ranked by referral priority
+│   ├── state.json             # Persistent counselor assignments and student outreach statuses
+│   ├── shap_summary.png       # Global feature importance summary plot
+│   └── data/
+│       └── data.csv           # Semicolon-delimited UCI student dataset (4,424 rows, 36 features)
+├── frontend/
+│   ├── index.html             # Single-page web application UI
+│   ├── script.js              # Vanilla JS controller with dynamic API_BASE integration
+│   ├── style.css              # Custom responsive stylesheet (Navy/Teal theme)
+│   ├── config.js              # Configurable API_BASE URL setting
+│   ├── results.csv            # Static copy of CV benchmark results
+│   └── shap_summary.png       # Static copy of global SHAP summary plot
+├── .gitignore                 # Git ignore rules (explicitly tracking required backend artifacts)
+├── VIVA_PREP.md               # Oral viva defense cheat sheet with Q&A
+└── README.md                  # Project documentation (this file)
 ```
 
 ---
@@ -64,53 +51,105 @@ AI PROJECT/
    cd "c:\Users\gudiy\OneDrive\Documents\AI PROJECT"
    ```
 
-2. **Install required dependencies:**
+2. **Install backend dependencies:**
    ```powershell
+   cd backend
    pip install -r requirements.txt
    ```
 
-3. **Verify dataset location:**
-   Ensure `data.csv` is placed inside the `data/` directory: `data/data.csv`.
+---
+
+## 💻 Running the Application
+
+### Method 1: Local Convenience (Single Command - Same Origin)
+In development, the FastAPI backend automatically serves `frontend/` as static files if present:
+
+```powershell
+cd backend
+uvicorn server:app --port 8000
+```
+Open **`http://localhost:8000`** in your browser. The full application (landing page, dashboard, student directory, counselor matching, reports) works immediately with zero configuration.
 
 ---
 
-## 💻 Execution Guide
+### Method 2: Running Backend & Frontend Separately (Decoupled Mode)
+Use this mode to test true decoupled client-server behavior with cross-origin requests:
 
-Each module is modular and can be executed independently:
+1. **Start the Backend:**
+   ```powershell
+   cd backend
+   uvicorn server:app --port 8000
+   ```
 
-### Step 1: Data Quality Checks & 5-Fold CV Comparison
+2. **Configure Frontend API URL:**
+   Open `frontend/config.js` and ensure it points to the backend:
+   ```javascript
+   window.API_BASE = "http://localhost:8000";
+   ```
+
+3. **Start the Frontend on a Separate Port (e.g. 5500):**
+   ```powershell
+   cd frontend
+   python -m http.server 5500
+   ```
+   Open **`http://localhost:5500`** in your browser. All API requests, export downloads, and auto-assignments communicate with `http://localhost:8000` via CORS.
+
+---
+
+### Method 3: Streamlit Fallback Dashboard
+If you want to run the legacy Streamlit interface:
 ```powershell
-python train.py
-```
-- Performs shape, missing value, duplicate, and class balance checks.
-- Runs Stratified 5-Fold Cross-Validation on Logistic Regression (with StandardScaler pipeline) and Random Forest.
-- Outputs summary table to console and saves to `results.csv`.
-
-### Step 2: Out-of-Fold Risk Scoring & SHAP Explanations
-```powershell
-python explain.py
-```
-- Generates unbiased out-of-fold (OOF) predicted probabilities (`risk_scores.csv`).
-- Trains final production Random Forest on the complete dataset (`model.pkl`).
-- Applies SHAP `TreeExplainer` across all students (`shap_values.npy`).
-- Saves global feature importance bar chart (`shap_summary.png`).
-
-### Step 3: Triage Priority Ranking & Counselor Briefings
-```powershell
-python briefing.py
-```
-- Calculates situational urgency based on financial and academic crisis triggers.
-- Computes Referral Priority scores and exports `ranked_students.csv`.
-- Generates personalized briefings featuring actual student values and top 3 SHAP drivers.
-- Tests the `NoRiskFactorsError` safety guardrail.
-
-### Step 4: Launch the Interactive Streamlit Dashboard
-```powershell
+cd backend
 streamlit run app.py
 ```
-- Opens the web application in your browser at `http://localhost:8501`.
-- Adjust the **Urgency Weight** slider in the sidebar to modulate priority ranking in real time.
-- Select any student from the triage queue to view their directional SHAP chart and download their advising briefing.
+Or from the project root:
+```powershell
+streamlit run backend/app.py
+```
+Opens in your browser at `http://localhost:8501`.
+
+---
+
+## 🌐 Production Deployment Guide
+
+### Deploying the Backend (Python Host: Render, Railway, etc.)
+- **Root Directory for Build:** `backend/`
+- **Build Command:** `pip install -r requirements.txt`
+- **Start Command:**
+  ```bash
+  uvicorn server:app --host 0.0.0.0 --port $PORT
+  ```
+- **Environment Variables:**
+  - `PORT`: Set automatically by your host (defaults to `8000` locally).
+  - `ALLOWED_ORIGINS`: Comma-separated list of allowed frontend domains (e.g. `https://my-eduguard-ui.vercel.app`), or `*` for public access.
+
+### Deploying the Frontend (Static Host: Vercel, Netlify, Cloudflare Pages, GitHub Pages)
+- **Publish Directory / Root:** `frontend/`
+- **Configuration:**
+  In `frontend/config.js`, update `window.API_BASE` to your deployed backend URL:
+  ```javascript
+  window.API_BASE = "https://your-backend-service.onrender.com";
+  ```
+- No build command required (pure HTML/CSS/Vanilla JS).
+
+---
+
+## 🔬 Model Training & Explainability Pipeline
+
+If you ever wish to re-execute the training or explainability pipelines from scratch:
+
+```powershell
+cd backend
+
+# Step 1: 5-Fold Stratified Cross-Validation
+python train.py
+
+# Step 2: Out-of-Fold Risk Scoring & SHAP TreeExplainer
+python explain.py
+
+# Step 3: Urgency Computation & Priority Ranking
+python briefing.py
+```
 
 ---
 

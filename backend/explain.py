@@ -32,6 +32,8 @@ import numpy as np
 import pandas as pd
 import joblib
 
+_HERE = Path(__file__).parent
+
 # Use non-interactive backend for reliable figure saving
 import matplotlib
 matplotlib.use("Agg")
@@ -214,9 +216,9 @@ def save_artifacts(model: RandomForestClassifier, feature_names: list, shap_valu
     and Streamlit application for fast inference without recomputation.
     """
     print("\n6. Persisting model and explanation artifacts...")
-    model_path = Path("model.pkl")
-    features_path = Path("features.pkl")
-    shap_path = Path("shap_values.npy")
+    model_path = _HERE / "model.pkl"
+    features_path = _HERE / "features.pkl"
+    shap_path = _HERE / "shap_values.npy"
 
     joblib.dump(model, model_path)
     print(f"   -> Saved model to: {model_path.resolve()}")
@@ -254,9 +256,9 @@ def main():
     """
     Main orchestration function for Step 2.
     """
-    data_path = Path("data/data.csv")
-    risk_scores_path = Path("risk_scores.csv")
-    summary_plot_path = Path("shap_summary.png")
+    data_path = _HERE / "data" / "data.csv"
+    risk_scores_path = _HERE / "risk_scores.csv"
+    summary_plot_path = _HERE / "shap_summary.png"
 
     # Step A: Validate dataset existence
     check_dataset_exists(data_path)
